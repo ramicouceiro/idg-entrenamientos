@@ -4,6 +4,7 @@ import { IoMdHome } from 'react-icons/io';
 import { FaDumbbell, FaCalendarAlt, FaUserShield } from 'react-icons/fa';
 import { MdSlowMotionVideo } from 'react-icons/md';
 import { UserResource } from "@clerk/types";
+import { SignOutButton } from '@clerk/clerk-react';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -45,6 +46,11 @@ const Layout: React.FC<LayoutProps> = ({ children, user }) => {
               <span className="hidden md:inline">Administrador</span>
             </Link>
           )}
+          <div>
+            <SignOutButton>
+              <button>Cerrar Sesión</button>
+            </SignOutButton>
+          </div>
         </nav>
       </aside>
 
@@ -72,6 +78,11 @@ const Layout: React.FC<LayoutProps> = ({ children, user }) => {
             <FaUserShield />
           </Link>
         )}
+        <SignOutButton>
+          <button>
+            Cerrar Sesión
+          </button>
+        </SignOutButton>
       </nav>
     </div>
   );
