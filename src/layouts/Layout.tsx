@@ -87,7 +87,7 @@ const Layout: React.FC<LayoutProps> = ({ children, user }) => {
       </main>
 
       {/* Barra de navegación móvil */}
-      <nav className="fixed bottom-0 left-0 right-0 text-white bg-gray-900 flex justify-around text-xl md:hidden">
+      <nav className="fixed bottom-0 left-0 right-0 text-white bg-gray-900 flex justify-around text-xl md:hidden pb-5">
         <Link to="/" className={`flex flex-col items-center w-full h-full  hover:text-green-500 hover:bg-gray-700 p-5 ${isActive('/') ? 'text-green-500 bg-gray-700' : 'text-white'}`}>
           <IoMdHome />
         </Link>
