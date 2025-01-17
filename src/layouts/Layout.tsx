@@ -87,25 +87,25 @@ const Layout: React.FC<LayoutProps> = ({ children, user }) => {
       </main>
 
       {/* Barra de navegación móvil */}
-      <nav className="fixed bottom-0 left-0 right-0 text-white bg-gray-900 flex justify-around text-xl md:hidden pb-5">
-        <Link to="/" className={`flex flex-col items-center w-full h-full  hover:text-green-500 hover:bg-gray-700 p-5 ${isActive('/') ? 'text-green-500 bg-gray-700' : 'text-white'}`}>
+      <nav className="fixed bottom-0 left-0 right-0 text-white bg-gray-900 flex justify-around text-xl md:hidden">
+        <Link to="/" className={`flex flex-col items-center w-full h-full  hover:text-green-500 hover:bg-gray-700 p-5 pb-10 ${isActive('/') ? 'text-green-500 bg-gray-700' : 'text-white'}`}>
           <IoMdHome />
         </Link>
-        <Link to="/planificaciones" className={`flex flex-col items-center w-full h-full hover:text-green-500 hover:bg-gray-700 p-5 ${isActive('/planificaciones') ? 'text-green-500 bg-gray-700' : 'text-white'}`}>
+        <Link to="/planificaciones" className={`flex flex-col items-center w-full h-full hover:text-green-500 hover:bg-gray-700 p-5 pb-10 ${isActive('/planificaciones') ? 'text-green-500 bg-gray-700' : 'text-white'}`}>
           <FaDumbbell />
         </Link>
-        <Link to="/turnos" className={`flex flex-col items-center w-full h-full hover:text-green-500 hover:bg-gray-700 p-5 ${isActive('/turnos') ? 'text-green-500 bg-gray-700' : 'text-white'}`}>
+        <Link to="/turnos" className={`flex flex-col items-center w-full h-full hover:text-green-500 hover:bg-gray-700 p-5 pb-10 ${isActive('/turnos') ? 'text-green-500 bg-gray-700' : 'text-white'}`}>
           <FaCalendarAlt />
         </Link>
-        <Link to="/videos" className={`flex flex-col items-center w-full h-full hover:text-green-500 hover:bg-gray-700 p-5 ${isActive('/videos') ? 'text-green-500 bg-gray-700' : 'text-white'}`}>
+        <Link to="/videos" className={`flex flex-col items-center w-full h-full hover:text-green-500 hover:bg-gray-700 p-5 pb-10 ${isActive('/videos') ? 'text-green-500 bg-gray-700' : 'text-white'}`}>
           <MdSlowMotionVideo />
         </Link>
         {isAdmin && (
-          <Link to="/admin" className={`flex flex-col items-center w-full h-full hover:text-green-500 hover:bg-gray-700 p-5 ${isActive('/admin') ? 'text-green-500 bg-gray-700' : 'text-white'}`}>
+          <Link to="/admin" className={`flex flex-col items-center w-full h-full hover:text-green-500 hover:bg-gray-700 p-5 pb-10 ${isActive('/admin') ? 'text-green-500 bg-gray-700' : 'text-white'}`}>
             <FaUserShield />
           </Link>
         )}
-        <div className="flex flex-col items-center w-full h-full text-red-500 p-5 cursor-pointer" onClick={handleSignOut}>
+        <div className="flex flex-col items-center w-full h-full text-red-500 p-5 pb-10 cursor-pointer" onClick={handleSignOut}>
             <TbLogout2 />
         </div>
       </nav>
