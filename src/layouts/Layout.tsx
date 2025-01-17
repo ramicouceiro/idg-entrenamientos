@@ -5,6 +5,7 @@ import { FaDumbbell, FaCalendarAlt, FaUserShield } from 'react-icons/fa';
 import { MdSlowMotionVideo } from 'react-icons/md';
 import { UserResource } from "@clerk/types";
 import { SignOutButton } from '@clerk/clerk-react';
+import { TbLogout2 } from 'react-icons/tb';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -19,7 +20,7 @@ const Layout: React.FC<LayoutProps> = ({ children, user }) => {
 
   console.log("render");
   return (
-    <div className="grid grid-cols-[16rem_1fr] min-h-screen w-screen bg-gray-800">
+    <div className="grid md:grid-cols-[16rem_1fr] grid-cols-1 min-h-screen w-screen bg-gray-800">
       {/* Sidebar */}
       <aside className="hidden md:flex md:flex-col bg-gray-900 text-white p-5">
         <img src="/img/logo-idg.jpg" alt="Logo" className="rounded-full w-20 self-center" />
@@ -46,43 +47,43 @@ const Layout: React.FC<LayoutProps> = ({ children, user }) => {
               <span className="hidden md:inline">Administrador</span>
             </Link>
           )}
-          <div>
+        </nav>
+          <div className='mt-auto'>
             <SignOutButton>
-              <button>Cerrar Sesión</button>
+              <button className='w-full bg-red-700 hover:bg-red-600'>Cerrar Sesión</button>
             </SignOutButton>
           </div>
-        </nav>
       </aside>
 
       {/* Contenido principal */}
-      <main className="p-5">
+      <main className="w-full p-5">
         {children}
       </main>
 
       {/* Barra de navegación móvil */}
-      <nav className="fixed bottom-0 left-0 right-0 bg-gray-900 text-white flex justify-around p-2 md:hidden">
-        <Link to="/" className={`flex flex-col items-center ${isActive('/') ? 'text-green-500' : ''}`}>
+      <nav className="fixed bottom-0 left-0 right-0 text-white bg-gray-900 flex justify-around text-xl md:hidden">
+        <Link to="/" className={`flex flex-col items-center w-full h-full  hover:text-green-500 hover:bg-gray-700 p-5 ${isActive('/') ? 'text-green-500 bg-gray-700' : 'text-white'}`}>
           <IoMdHome />
         </Link>
-        <Link to="/planificaciones" className={`flex flex-col items-center ${isActive('/planificaciones') ? 'text-green-500' : ''}`}>
+        <Link to="/planificaciones" className={`flex flex-col items-center w-full h-full hover:text-green-500 hover:bg-gray-700 p-5 ${isActive('/planificaciones') ? 'text-green-500 bg-gray-700' : 'text-white'}`}>
           <FaDumbbell />
         </Link>
-        <Link to="/turnos" className={`flex flex-col items-center ${isActive('/turnos') ? 'text-green-500' : ''}`}>
+        <Link to="/turnos" className={`flex flex-col items-center w-full h-full hover:text-green-500 hover:bg-gray-700 p-5 ${isActive('/turnos') ? 'text-green-500 bg-gray-700' : 'text-white'}`}>
           <FaCalendarAlt />
         </Link>
-        <Link to="/videos" className={`flex flex-col items-center ${isActive('/videos') ? 'text-green-500' : ''}`}>
+        <Link to="/videos" className={`flex flex-col items-center w-full h-full hover:text-green-500 hover:bg-gray-700 p-5 ${isActive('/videos') ? 'text-green-500 bg-gray-700' : 'text-white'}`}>
           <MdSlowMotionVideo />
         </Link>
         {isAdmin && (
-          <Link to="/admin" className={`flex flex-col items-center ${isActive('/admin') ? 'text-green-500' : ''}`}>
+          <Link to="/admin" className={`flex flex-col items-center w-full h-full hover:text-green-500 hover:bg-gray-700 p-5 ${isActive('/admin') ? 'text-green-500 bg-gray-700' : 'text-white'}`}>
             <FaUserShield />
           </Link>
         )}
-        <SignOutButton>
-          <button>
-            Cerrar Sesión
-          </button>
-        </SignOutButton>
+        <div className="flex flex-col items-center w-full h-full hover:text-green-500 hover:bg-gray-700 p-5 cursor-pointer">
+          <SignOutButton>
+            <TbLogout2 />
+          </SignOutButton>
+        </div>
       </nav>
     </div>
   );
