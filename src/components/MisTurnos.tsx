@@ -12,7 +12,7 @@ export default function MisTurnos() {
             <div className='flex justify-between'>
                 <div>
                     <h2 className="text-2xl font-bold">🏋️‍♂️ Mis Turnos</h2>
-                    <p className="text-gray-400">Administra tus turnos aquí</p>
+                    <p className="text-gray-400">Administra tus turnos aquí.</p>
                 </div>
                 <div>
                     <div className='bg-green-500 hover:bg-green-700 h-10 w-10 flex justify-center items-center rounded-full hover:cursor-pointer transition-all' onClick={() => console.log('Agregar turno')}>
