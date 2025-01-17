@@ -4,8 +4,9 @@ import { IoMdHome } from 'react-icons/io';
 import { FaDumbbell, FaCalendarAlt, FaUserShield } from 'react-icons/fa';
 import { MdSlowMotionVideo } from 'react-icons/md';
 import { UserResource } from "@clerk/types";
-import { SignOutButton } from '@clerk/clerk-react';
+import { useClerk } from '@clerk/clerk-react';
 import { TbLogout2 } from 'react-icons/tb';
+import Swal from 'sweetalert2';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -17,6 +18,33 @@ const Layout: React.FC<LayoutProps> = ({ children, user }) => {
   const isAdmin = user?.publicMetadata.role === 'admin';
 
   const isActive = (path: string) => location.pathname === path;
+
+  const { signOut } = useClerk();
+
+  const handleSignOut = () =>{
+    Swal.fire({
+                title: "¿Cerrar sesión?",
+                showCancelButton: true,
+                confirmButtonText: "Cerrar sesión",
+                cancelButtonText: `Cancelar`,
+                icon: "warning",
+                background: "#1F2937", // Color de fondo (gris oscuro)
+                color: "#FFFFFF", // Color del texto
+                confirmButtonColor: "#EF4444", // Rojo Tailwind
+                denyButtonColor: "#9CA3AF", // Gris claro
+                customClass: {
+                    popup: 'custom-swal-popup',
+                    title: 'custom-swal-title',
+                    confirmButton: 'custom-swal-confirm',
+                    denyButton: 'custom-swal-deny',
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                  signOut({ redirectUrl: '/' });
+                }
+            });
+    
+  }
 
   console.log("render");
   return (
@@ -49,9 +77,7 @@ const Layout: React.FC<LayoutProps> = ({ children, user }) => {
           )}
         </nav>
           <div className='mt-auto'>
-            <SignOutButton>
-              <button className='w-full bg-red-700 hover:bg-red-600'>Cerrar Sesión</button>
-            </SignOutButton>
+            <button className='w-full bg-red-700 hover:bg-red-600' onClick={handleSignOut}>Cerrar Sesión</button>
           </div>
       </aside>
 
@@ -79,10 +105,8 @@ const Layout: React.FC<LayoutProps> = ({ children, user }) => {
             <FaUserShield />
           </Link>
         )}
-        <div className="flex flex-col items-center w-full h-full hover:text-green-500 hover:bg-gray-700 p-5 cursor-pointer">
-          <SignOutButton>
+        <div className="flex flex-col items-center w-full h-full hover:text-green-500 hover:bg-gray-700 p-5 cursor-pointer" onClick={handleSignOut}>
             <TbLogout2 />
-          </SignOutButton>
         </div>
       </nav>
     </div>

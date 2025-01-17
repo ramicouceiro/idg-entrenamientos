@@ -5,10 +5,16 @@
 //     last_name: string;
 // }
 
+import { useUser } from "@clerk/clerk-react";
+import Layout from "../layouts/Layout";
+
 
 export default function AdminPage() {
+    const { user } = useUser();
     return(
-        <h1>No tienes permisos de administrador</h1>
+        <Layout user={user}>
+            <h1>admin page</h1>
+        </Layout>
     );
 }
 

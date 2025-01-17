@@ -13,24 +13,25 @@ import SignUpPage from './routes/sign-up'
 import DashboardPage from './routes/dashboard'
 import AdminPage from './routes/admin'
 import PlanificacionesPage from './routes/planificaciones'
+import TurnosPage from './routes/turnos'
+import VideosPage from './routes/videos'
 const router = createBrowserRouter([
   {
     element: <RootLayout />,
     children: [
-      { path: '/', element: <IndexPage /> },
-      { path: '/planificaciones', element: <PlanificacionesPage /> },
-      { path: '/sign-in/*', element: <SignInPage /> },
-      { path: '/sign-up/*', element: <SignUpPage /> },
+      { path: '/'                 , element: <IndexPage />            },
+      { path: '/planificaciones'  , element: <PlanificacionesPage />  },
+      { path: '/turnos'           , element: <TurnosPage />           },
+      { path: '/videos'           , element: <VideosPage />           },
+      { path: '/admin'            , element: <AdminPage />            },
+      { path: '/sign-in/*'        , element: <SignInPage />           },
+      { path: '/sign-up/*'        , element: <SignUpPage />           },
       {
         element: <DashboardLayout />,
         path: 'dashboard',
         children: [
           { path: '/dashboard', element: <DashboardPage /> },
         ],
-      },
-      {
-        path: 'admin',
-        element: <AdminPage />,
       }
     ],
   },
