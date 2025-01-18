@@ -52,25 +52,25 @@ const Layout: React.FC<LayoutProps> = ({ children, user }) => {
       {/* Sidebar */}
       <aside className="hidden md:flex md:flex-col bg-gray-900 text-white p-5">
         <img src="/img/logo-idg.jpg" alt="Logo" className="rounded-full w-20 self-center" />
-        <nav className="flex flex-col gap-4 mt-10 text-xl">
-          <Link to="/" className={`flex items-center gap-3 hover:text-green-500 hover:bg-gray-700 px-4 py-2 rounded-lg transition-all ${isActive('/') ? 'text-green-500 hover:bg-transparent' : 'text-white'}`}>
+        <nav className="flex flex-col mt-10 text-xl">
+          <Link to="/" className={`flex items-center gap-3 hover:text-green-500 hover:bg-gray-700 px-4 py-4 rounded-lg transition-all ${isActive('/') ? 'text-green-500' : 'text-white'}`}>
             <IoMdHome />
             <span className="hidden md:inline">Principal</span>
           </Link>
-          <Link to="/planificaciones" className={`flex items-center gap-3 hover:bg-gray-700 hover:text-green-500 px-4 py-2 rounded-lg transition-all ${isActive('/planificaciones') ? 'text-green-500' : 'text-white'}`}>
+          <Link to="/planificaciones" className={`flex items-center gap-3 hover:bg-gray-700 hover:text-green-500 px-4 py-4 rounded-lg transition-all ${isActive('/planificaciones') ? 'text-green-500' : 'text-white'}`}>
             <FaDumbbell />
             <span className="hidden md:inline">Planificaciones</span>
           </Link>
-          <Link to="/turnos" className={`flex items-center gap-3 hover:bg-gray-700 hover:text-green-500 px-4 py-2 rounded-lg transition-all ${isActive('/turnos') ? 'text-green-500' : 'text-white'}`}>
+          <Link to="/turnos" className={`flex items-center gap-3 hover:bg-gray-700 hover:text-green-500 px-4 py-4 rounded-lg transition-all ${isActive('/turnos') ? 'text-green-500' : 'text-white'}`}>
             <FaCalendarAlt />
             <span className="hidden md:inline">Turnos</span>
           </Link>
-          <Link to="/videos" className={`flex items-center gap-3 hover:bg-gray-700 hover:text-green-500 px-4 py-2 rounded-lg transition-all ${isActive('/videos') ? 'text-green-500' : 'text-white'}`}>
+          <Link to="/videos" className={`flex items-center gap-3 hover:bg-gray-700 hover:text-green-500 px-4 py-4 rounded-lg transition-all ${isActive('/videos') ? 'text-green-500' : 'text-white'}`}>
             <MdSlowMotionVideo />
             <span className="hidden md:inline">Videos</span>
           </Link>
           {isAdmin && (
-            <Link to="/admin" className={`flex items-center gap-3 hover:bg-gray-700 hover:text-green-500 px-4 py-2 rounded-lg transition-all ${isActive('/admin') ? 'text-green-500' : 'text-white'}`}>
+            <Link to="/admin" className={`flex items-center gap-3 hover:bg-gray-700 hover:text-green-500 px-4 py-4 rounded-lg transition-all ${isActive('/admin') ? 'text-green-500' : 'text-white'}`}>
               <FaUserShield />
               <span className="hidden md:inline">Administrador</span>
             </Link>
@@ -87,25 +87,25 @@ const Layout: React.FC<LayoutProps> = ({ children, user }) => {
       </main>
 
       {/* Barra de navegación móvil */}
-      <nav className="fixed bottom-0 left-0 right-0 text-white bg-gray-900 flex justify-around mb-10 text-xl md:hidden">
-        <Link to="/" className={`flex flex-col items-center w-full h-full  hover:text-green-500 hover:bg-gray-700 p-5 pb-10 pt-10 ${isActive('/') ? 'text-green-500 bg-gray-700' : 'text-white'}`}>
+      <nav className="fixed bottom-0 left-0 right-0 text-white bg-gray-900 flex justify-around text-xl md:hidden">
+        <Link to="/" className={`flex flex-col items-center w-full h-full  hover:text-green-500 hover:bg-gray-700 pb-14 pt-10 ${isActive('/') ? 'text-green-500 bg-gray-700' : 'text-white'}`}>
           <IoMdHome />
         </Link>
-        <Link to="/planificaciones" className={`flex flex-col items-center w-full h-full hover:text-green-500 hover:bg-gray-700 p-5 pb-10 pt-10 ${isActive('/planificaciones') ? 'text-green-500 bg-gray-700' : 'text-white'}`}>
+        <Link to="/planificaciones" className={`flex flex-col items-center w-full h-full hover:text-green-500 hover:bg-gray-700 pb-14 pt-10 ${isActive('/planificaciones') ? 'text-green-500 bg-gray-700' : 'text-white'}`}>
           <FaDumbbell />
         </Link>
-        <Link to="/turnos" className={`flex flex-col items-center w-full h-full hover:text-green-500 hover:bg-gray-700 p-5 pb-10 pt-10 ${isActive('/turnos') ? 'text-green-500 bg-gray-700' : 'text-white'}`}>
+        <Link to="/turnos" className={`flex flex-col items-center w-full h-full hover:text-green-500 hover:bg-gray-700 pb-14 pt-10 ${isActive('/turnos') ? 'text-green-500 bg-gray-700' : 'text-white'}`}>
           <FaCalendarAlt />
         </Link>
-        <Link to="/videos" className={`flex flex-col items-center w-full h-full hover:text-green-500 hover:bg-gray-700 p-5 pb-10 pt-10 ${isActive('/videos') ? 'text-green-500 bg-gray-700' : 'text-white'}`}>
+        <Link to="/videos" className={`flex flex-col items-center w-full h-full hover:text-green-500 hover:bg-gray-700 pb-14 pt-10 ${isActive('/videos') ? 'text-green-500 bg-gray-700' : 'text-white'}`}>
           <MdSlowMotionVideo />
         </Link>
         {isAdmin && (
-          <Link to="/admin" className={`flex flex-col items-center w-full h-full hover:text-green-500 hover:bg-gray-700 p-5 pb-10 pt-10 ${isActive('/admin') ? 'text-green-500 bg-gray-700' : 'text-white'}`}>
+          <Link to="/admin" className={`flex flex-col items-center w-full h-full hover:text-green-500 hover:bg-gray-700 pb-14 pt-10 ${isActive('/admin') ? 'text-green-500 bg-gray-700' : 'text-white'}`}>
             <FaUserShield />
           </Link>
         )}
-        <div className="flex flex-col items-center w-full h-full text-red-500 hover:bg-gray-700 p-5 cursor-pointer pb-10 pt-10" onClick={handleSignOut}>
+        <div className="flex flex-col items-center w-full h-full text-red-500 hover:bg-gray-700 p-5 cursor-pointer pb-14 pt-10" onClick={handleSignOut}>
             <TbLogout2 />
         </div>
       </nav>
