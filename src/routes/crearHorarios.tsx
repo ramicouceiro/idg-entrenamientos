@@ -158,7 +158,7 @@ const CrearHorariosPage: React.FC = () => {
 
 async function getHorarios() {
     try {
-        const response = await fetch(API_URL + "/api/horarios/getHorarios");
+        const response = await fetch("https://idg-backend-smoky.vercel.app/api/horarios/getHorarios");
         if (!response.ok) throw new Error("Error obteniendo horarios");
         return await response.json();
     } catch (error) {
