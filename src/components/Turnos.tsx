@@ -28,7 +28,7 @@ const Turnos: React.FC = () => {
   const currentTime = getCurrentTime();
 
   return (
-    <div className="p-4 bg-gray-900 min-h-screen mt-5 rounded-xl">
+    <div className="p-4 bg-gray-900 mt-5 h-full rounded-xl">
       <h2 className="text-xl font-bold text-white mb-4">Agenda</h2>
       <div className="relative overflow-x-hidden">
         <div className="flex overflow-x-auto space-x-4 p-2 scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800 w-full max-w-full no-scrollbar snap-x snap-mandatory">
