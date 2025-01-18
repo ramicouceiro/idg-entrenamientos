@@ -159,7 +159,7 @@ const CrearHorariosPage: React.FC = () => {
 async function getHorarios() {
     try {
         const response = await fetch(API_URL + "/api/api/horarios/getHorarios");
-        if (!response.ok) throw new Error("Error obteniendo horarios");
+        if (!response.ok) throw new Error("Error obteniendo horarioss");
         return await response.json();
     } catch (error) {
         console.error(error);
