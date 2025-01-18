@@ -158,8 +158,8 @@ const CrearHorariosPage: React.FC = () => {
 
 async function getHorarios() {
     try {
-        const response = await fetch(API_URL + "/api/api/horarios/getHorarios");
-        if (!response.ok) throw new Error("Error obteniendo horarioss");
+        const response = await fetch(API_URL + "/api/horarios/getHorarios");
+        if (!response.ok) throw new Error("Error obteniendo horarios");
         return await response.json();
     } catch (error) {
         console.error(error);
@@ -169,7 +169,7 @@ async function getHorarios() {
 
 async function addHorario(horario: Horario) {
     try {
-        const response = await fetch(API_URL + "/api/api/horarios/addHorario", {
+        const response = await fetch(API_URL + "/api/horarios/addHorario", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(horario),
@@ -184,7 +184,7 @@ async function addHorario(horario: Horario) {
 
 async function getDisciplinas() {
     try {
-        const response = await fetch(API_URL+ "/api/api/disciplinas/getDisciplinas");
+        const response = await fetch(API_URL+ "/api/disciplinas/getDisciplinas");
         if (!response.ok) throw new Error("Error obteniendo disciplinas");
         return await response.json();
     } catch (error) {
