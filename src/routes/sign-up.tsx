@@ -1,5 +1,6 @@
 import { SignUp, useUser } from '@clerk/clerk-react';
 import { useEffect } from 'react';
+const API_URL = import.meta.env.VITE_API_URL;
 
 export default function SignUpPage() {
   const { user } = useUser();
@@ -26,7 +27,7 @@ export default function SignUpPage() {
 // Función para guardar los datos en la base de datos
 async function saveToDatabase(clerkUserId: string, firstName: string | null, lastName: string | null): Promise<void> {
   try {
-    const response = await fetch("https://idg-backend-smoky.vercel.app/api/addUser", {
+    const response = await fetch(API_URL + "/api/api/addUser", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

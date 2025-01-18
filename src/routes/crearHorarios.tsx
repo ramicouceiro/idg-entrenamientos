@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa";
+const API_URL = import.meta.env.VITE_API_URL;
 
 interface Horario {
     id: number;
@@ -157,7 +158,7 @@ const CrearHorariosPage: React.FC = () => {
 
 async function getHorarios() {
     try {
-        const response = await fetch("https://idg-backend-smoky.vercel.app//api/horarios/getHorarios");
+        const response = await fetch(API_URL + "/api/api/horarios/getHorarios");
         if (!response.ok) throw new Error("Error obteniendo horarios");
         return await response.json();
     } catch (error) {
@@ -168,7 +169,7 @@ async function getHorarios() {
 
 async function addHorario(horario: Horario) {
     try {
-        const response = await fetch("https://idg-backend-smoky.vercel.app//api/horarios/addHorario", {
+        const response = await fetch(API_URL + "/api/api/horarios/addHorario", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(horario),
@@ -183,7 +184,7 @@ async function addHorario(horario: Horario) {
 
 async function getDisciplinas() {
     try {
-        const response = await fetch("https://idg-backend-smoky.vercel.app//api/disciplinas/getDisciplinas");
+        const response = await fetch(API_URL+ "/api/api/disciplinas/getDisciplinas");
         if (!response.ok) throw new Error("Error obteniendo disciplinas");
         return await response.json();
     } catch (error) {
