@@ -80,7 +80,7 @@ const Layout: React.FC<LayoutProps> = ({ children, user }) => {
       </aside>
 
       {/* Contenido principal */}
-      <main className="w-full p-5 overflow-hidden">
+      <main className="w-full p-4 overflow-hidden">
         {children}
       </main>
 
