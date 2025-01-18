@@ -37,7 +37,7 @@ export default function MisTurnos() {
         });
     };
     return (
-        <div className="bg-gray-900 rounded-xl p-5 flex flex-col xl:w-1/2 w-full">
+        <div className="bg-gray-900 rounded-xl p-5 flex flex-col w-full xl:w-[calc(50%-10px)]">
             <div className='flex justify-between'>
                 <div>
                     <h2 className="text-2xl font-bold">📅 Mis Turnos</h2>

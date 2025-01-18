@@ -45,8 +45,6 @@ const Layout: React.FC<LayoutProps> = ({ children, user }) => {
             });
     
   }
-
-  console.log("render");
   return (
     <div className="grid md:grid-cols-[16rem_1fr] grid-cols-1 min-h-screen w-screen bg-gray-800">
       {/* Sidebar */}
