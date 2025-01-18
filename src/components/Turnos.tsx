@@ -29,7 +29,7 @@ const Turnos: React.FC = () => {
     const currentTime = getCurrentTime();
 
     return (
-        <div className={`p-4 bg-gray-900 mt-0 xl:mt-5 rounded-xl max-h-[650px]`}>
+        <div className={`p-4 bg-gray-900 mt-0 xl:mt-5 rounded-xl h-auto`}>
             <h2 className="text-xl font-bold text-white mb-4">Agenda</h2>
             <div className="relative overflow-x-hidden">
                 <div className="flex overflow-x-auto space-x-4 p-2 scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800 w-full max-w-full no-scrollbar snap-x snap-mandatory">
@@ -37,7 +37,7 @@ const Turnos: React.FC = () => {
                         <div key={day} className="bg-gray-800 shadow-md rounded-lg p-4 min-w-[250px] flex-shrink-0 snap-start">
                             <h3 className="text-lg font-semibold text-white mb-3">{name} {day}</h3>
                             {/* Contenedor con Scroll Vertical */}
-                            <div className="flex flex-col gap-4 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-600 max-h-[500px] xl:max-h-full">
+                            <div className="flex flex-col gap-4 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-600 h-auto ">
                                 {(horariosDisponibles[name] || []).filter(horario => {
                                     const [hour, minute] = horario.split(":").map(Number);
                                     const turnoTime = hour * 60 + minute;
