@@ -15,28 +15,36 @@ import AdminPage from './routes/admin'
 import PlanificacionesPage from './routes/planificaciones'
 import TurnosPage from './routes/turnos'
 import VideosPage from './routes/videos'
+import PaquetesPage from './routes/paquetes'
+import CrearHorariosPage from './routes/crearHorarios'
+
 const router = createBrowserRouter([
   {
     element: <RootLayout />,
     children: [
-      { path: '/'                 , element: <IndexPage />            },
-      { path: '/planificaciones'  , element: <PlanificacionesPage />  },
-      { path: '/turnos'           , element: <TurnosPage />           },
-      { path: '/videos'           , element: <VideosPage />           },
-      { path: '/admin'            , element: <AdminPage />            },
-      { path: '/sign-in/*'        , element: <SignInPage />           },
-      { path: '/sign-up/*'        , element: <SignUpPage />           },
+      { path: '/', element: <IndexPage /> },
+      { path: 'planificaciones', element: <PlanificacionesPage /> },
+      { path: 'turnos', element: <TurnosPage /> },
+      { path: 'videos', element: <VideosPage /> },
+      { path: 'paquetes', element: <PaquetesPage /> },
+      { path: 'sign-in/*', element: <SignInPage /> },
+      { path: 'sign-up/*', element: <SignUpPage /> },
+
       {
-        element: <DashboardLayout />,
         path: 'dashboard',
-        children: [
-          { path: '/dashboard', element: <DashboardPage /> },
-        ],
-      }
+        element: <DashboardLayout />,
+        children: [{ path: '', element: <DashboardPage /> }],
+      },
+
+      {
+        path: 'admin',
+        element: <AdminPage />,
+        children: [{ path: 'horarios', element: <CrearHorariosPage /> }],
+      },
     ],
   },
-])
+]);
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
-    <RouterProvider router={router} />
-)
+  <RouterProvider router={router} />
+);

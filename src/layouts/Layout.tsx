@@ -7,6 +7,7 @@ import { UserResource } from "@clerk/types";
 import { useClerk } from '@clerk/clerk-react';
 import { TbLogout2 } from 'react-icons/tb';
 import Swal from 'sweetalert2';
+import { FiPackage } from 'react-icons/fi';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -67,6 +68,10 @@ const Layout: React.FC<LayoutProps> = ({ children, user }) => {
             <MdSlowMotionVideo />
             <span className="hidden md:inline">Videos</span>
           </Link>
+          <Link to="/paquetes" className={`flex items-center gap-3 hover:bg-gray-700 hover:text-green-500 px-4 py-4 rounded-lg transition-all ${isActive('/pagos') ? 'text-green-500' : 'text-white'}`}>
+            <FiPackage />
+            <span className="hidden md:inline">Paquetes</span>
+          </Link>
           {isAdmin && (
             <Link to="/admin" className={`flex items-center gap-3 hover:bg-gray-700 hover:text-green-500 px-4 py-4 rounded-lg transition-all ${isActive('/admin') ? 'text-green-500' : 'text-white'}`}>
               <FaUserShield />
@@ -98,6 +103,9 @@ const Layout: React.FC<LayoutProps> = ({ children, user }) => {
         <Link to="/videos" className={`flex flex-col items-center w-full h-full hover:text-green-500 pb-14 pt-10 ${isActive('/videos') ? 'text-green-500 bg-gray-700' : 'text-white'}`}>
           <MdSlowMotionVideo />
         </Link>
+        <Link to="/paquetes" className={`flex flex-col items-center w-full h-full hover:text-green-500 pb-14 pt-10 ${isActive('/videos') ? 'text-green-500 bg-gray-700' : 'text-white'}`}>
+            <FiPackage />
+          </Link>
         {isAdmin && (
           <Link to="/admin" className={`flex flex-col items-center w-full h-full hover:text-green-500 pb-14 pt-10 ${isActive('/admin') ? 'text-green-500 bg-gray-700' : 'text-white'}`}>
             <FaUserShield />

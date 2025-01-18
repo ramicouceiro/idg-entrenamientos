@@ -14,7 +14,7 @@ const generateMonthDays = () => {
     return Array.from({ length: daysInMonth - today + 1 }, (_, i) => {
         const date = new Date(new Date().getFullYear(), new Date().getMonth(), today + i);
         const dayName = date.toLocaleDateString("es-ES", { weekday: "long" });
-        if (dayName.toLowerCase() === "domingo") return null; // Excluir domingos
+        // if (dayName.toLowerCase() === "domingo") return null; // Excluir domingos
         return { day: today + i, name: dayName.charAt(0).toUpperCase() + dayName.slice(1) };
     }).filter(Boolean) as { day: number; name: string }[];
 };
@@ -28,16 +28,30 @@ const Turnos: React.FC = () => {
     const days = generateMonthDays();
     const currentTime = getCurrentTime();
 
+    // Filtrar los días que tienen horarios disponibles en el futuro
+    const filteredDays = days.filter(({ day, name }) => {
+        const horarios = horariosDisponibles[name] || [];
+
+        // Convertir los horarios a minutos y filtrar los que aún no han pasado
+        const horariosFuturos = horarios.filter(horario => {
+            const [hour, minute] = horario.split(":").map(Number);
+            const turnoTime = hour * 60 + minute;
+            return day !== new Date().getDate() || turnoTime >= currentTime;
+        });
+
+        return horariosFuturos.length > 0;
+    });
+
     return (
         <div className={`p-4 bg-gray-900 mt-0 xl:mt-5 rounded-xl h-auto`}>
-            <h2 className="text-xl font-bold text-white mb-4">Agenda</h2>
+            <h2 className="text-xl font-bold text-white">Agenda</h2>
+            <p className="mb-2 text-gray-400">Agenda tu turno aqui</p>
             <div className="relative overflow-x-hidden">
                 <div className="flex overflow-x-auto space-x-4 p-2 scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800 w-full max-w-full no-scrollbar snap-x snap-mandatory">
-                    {days.map(({ day, name }) => (
+                    {filteredDays.map(({ day, name }) => (
                         <div key={day} className="bg-gray-800 shadow-md rounded-lg p-4 min-w-[250px] flex-shrink-0 snap-start">
                             <h3 className="text-lg font-semibold text-white mb-3">{name} {day}</h3>
-                            {/* Contenedor con Scroll Vertical */}
-                            <div className="flex flex-col gap-4 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-600 h-auto ">
+                            <div className="flex flex-col gap-4 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-600 h-auto">
                                 {(horariosDisponibles[name] || []).filter(horario => {
                                     const [hour, minute] = horario.split(":").map(Number);
                                     const turnoTime = hour * 60 + minute;
@@ -58,4 +72,3 @@ const Turnos: React.FC = () => {
 };
 
 export default Turnos;
-
