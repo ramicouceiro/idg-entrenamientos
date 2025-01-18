@@ -105,7 +105,7 @@ const Layout: React.FC<LayoutProps> = ({ children, user }) => {
             <FaUserShield />
           </Link>
         )}
-        <div className="flex flex-col items-center w-full h-full text-red-500 hover:bg-gray-700 p-5 cursor-pointer pb-14 pt-10" onClick={handleSignOut}>
+        <div className="flex flex-col items-center w-full h-full text-red-500 hover:bg-gray-700 cursor-pointer pb-14 pt-10" onClick={handleSignOut}>
             <TbLogout2 />
         </div>
       </nav>
