@@ -29,7 +29,7 @@ const Turnos: React.FC = () => {
 
   return (
     <div className="p-4 bg-gray-900 min-h-screen mt-5 rounded-xl">
-      <h2 className="text-xl font-bold text-green-500 mb-4">Agenda</h2>
+      <h2 className="text-xl font-bold text-white mb-4">Agenda</h2>
       <div className="relative overflow-x-hidden">
         <div className="flex overflow-x-auto space-x-4 p-2 scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800 w-full max-w-full no-scrollbar snap-x snap-mandatory">
           {days.map(({ day, name }) => (
