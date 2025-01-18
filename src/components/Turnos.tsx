@@ -43,9 +43,9 @@ const Turnos: React.FC = () => {
                                     const turnoTime = hour * 60 + minute;
                                     return day !== new Date().getDate() || turnoTime >= currentTime;
                                 }).map((horario, index) => (
-                                    <div key={index} className="p-4 border border-gray-200 rounded-lg shadow-sm bg-gray-700">
+                                    <div key={index} className="p-2 xl:p-4 border border-gray-200 rounded-lg shadow-sm bg-gray-700">
                                         <p className="text-lg font-semibold text-green-400">{horario}</p>
-                                        <p className="text-md text-white font-bold">Fuerza y Acondicionamiento</p>
+                                        <p className="text-md text-white">Fuerza y Acondicionamiento</p>
                                     </div>
                                 ))}
                             </div>
