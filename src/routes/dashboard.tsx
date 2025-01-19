@@ -8,7 +8,7 @@ export default function DashboardPage() {
   return (
     <Layout user={user}>
       <main className="bg-gray-800 text-white p-6 w-full">
-        <h1 className="text-2xl font-bold">👋 Buenos díass {user?.firstName}!</h1>
+        <h1 className="text-2xl font-bold">👋 Buenos días {user?.firstName}!</h1>
         <DashboardContent user={user} />
       </main>
     </Layout>
