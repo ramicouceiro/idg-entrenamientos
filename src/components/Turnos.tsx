@@ -1,4 +1,6 @@
+import { useUser } from "@clerk/clerk-react";
 import { useEffect, useState } from "react";
+import Swal from "sweetalert2";
 const API_URL = import.meta.env.VITE_API_URL;
 
 interface Horario {
@@ -29,6 +31,8 @@ const Turnos: React.FC = () => {
     const [horariosDisponibles, setHorariosDisponibles] = useState<Horario[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const { user } = useUser();
+    const clerkUserId = user?.id;
 
     const days = generateMonthDays();
     const currentTime = getCurrentTime();
@@ -47,6 +51,61 @@ const Turnos: React.FC = () => {
 
         fetchHorarios();
     }, []);
+
+    const handleReserva = async (horario: Horario, day: number) => {
+        // Obtener la fecha real de la reserva en formato YYYY-MM-DD
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = today.getMonth() + 1; // Enero es 0, sumamos 1
+        const formattedDate = `${year}-${month.toString().padStart(2, "0")}-${day.toString().padStart(2, "0")}`;
+    
+        console.log("Fecha de la reserva enviada:", formattedDate);
+    
+        const result = await Swal.fire({
+            title: "Confirmar Reserva",
+            text: `¿Quieres reservar el turno de ${horario.hora} para el ${formattedDate}?`,
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonText: "Reservar",
+            cancelButtonText: "Cancelar",
+            background: "#1F2937",
+            color: "#FFFFFF",
+            confirmButtonColor: "#22C55E",
+            cancelButtonColor: "#EF4444",
+        });
+    
+        if (result.isConfirmed) {
+            try {
+                await reservarTurno(formattedDate, horario.id, clerkUserId);
+                
+                // Actualizar la UI restando un cupo disponible
+                setHorariosDisponibles((prevHorarios) =>
+                    prevHorarios.map((h) =>
+                        h.id === horario.id ? { ...h, cupo_disponible: h.cupo_disponible - 1 } : h
+                    )
+                );
+    
+                Swal.fire({
+                    title: "Reserva Confirmada",
+                    text: `Tu turno para el ${formattedDate} ha sido reservado.`,
+                    icon: "success",
+                    background: "#1F2937",
+                    color: "#FFFFFF",
+                    confirmButtonColor: "#22C55E",
+                });
+            } catch (error) {
+                console.error("Error al reservar el turno:", error);
+                Swal.fire({
+                    title: "Error",
+                    text: "No se pudo reservar el turno.",
+                    icon: "error",
+                    background: "#1F2937",
+                    color: "#FFFFFF",
+                    confirmButtonColor: "#EF4444",
+                });
+            }
+        }
+    };
 
     // Filtrar los días con horarios futuros
     const filteredDays = days.filter(({ day, name }) => {
@@ -83,7 +142,11 @@ const Turnos: React.FC = () => {
                                 {horariosDisponibles
                                     .filter(horario => horario.dia_semana === name && horario.cupo_disponible > 0)
                                     .map((horario, index) => (
-                                        <div key={index} className="p-2 xl:p-4 border border-gray-200 rounded-lg shadow-sm bg-gray-700 cursor-pointer">
+                                        <div
+                                            key={index}
+                                            className="p-2 xl:p-4 border border-gray-200 rounded-lg shadow-sm bg-gray-700 cursor-pointer hover:bg-gray-600 transition"
+                                            onClick={() => handleReserva(horario, day)}
+                                        >
                                             <p className="text-lg font-semibold text-green-400">{horario.hora}</p>
                                             <p className="text-md text-white">Fuerza y Acondicionamiento</p>
                                             <p className="text-sm text-gray-400">Cupos disponibles: {horario.cupo_disponible}</p>
@@ -97,6 +160,21 @@ const Turnos: React.FC = () => {
         </div>
     );
 };
+
+// Función para reservar un turno en la API
+async function reservarTurno(fecha: string, horarioId: number, clerkUserId: string | undefined | null): Promise<void> {
+    const response = await fetch(`${API_URL}/api/reservas/addReserva`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ fecha, horario_id: horarioId, clerk_user_id: clerkUserId }), // 🔹 Aquí corregimos los nombres
+    });
+
+    if (!response.ok) {
+        throw new Error(`Error en la reserva: ${response.status} ${response.statusText}`);
+    }
+}
 
 async function getCuposDisponibles(): Promise<Horario[]> {
     try {

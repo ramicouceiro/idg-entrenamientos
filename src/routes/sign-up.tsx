@@ -27,7 +27,7 @@ export default function SignUpPage() {
 // Función para guardar los datos en la base de datos
 async function saveToDatabase(clerkUserId: string, firstName: string | null, lastName: string | null): Promise<void> {
   try {
-    const response = await fetch(API_URL + "/api/api/addUser", {
+    const response = await fetch(`${API_URL}/api/user/addUser`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
