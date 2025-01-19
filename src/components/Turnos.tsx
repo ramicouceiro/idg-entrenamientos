@@ -121,7 +121,9 @@ const Turnos: React.FC = () => {
         return horariosFuturos.length > 0;
     });
 
-    if (loading) return <p className="text-white">Cargando horarios...</p>;
+    if (loading) return <div className="w-full h-full flex justify-center items-center"><div
+    className="w-10 h-10 border-4 border-t-blue-500 border-gray-300 rounded-full animate-spin"
+  ></div></div>;
     if (error) return <p className="text-red-500">{error}</p>;
 
     return (
