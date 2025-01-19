@@ -15,4 +15,39 @@
     <div id="root" style="overflow-x: hidden;"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
+  <style>
+    /* Aplicar a todo el sitio */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.1) transparent; /* Color sutil */
+}
+
+/* Webkit (Chrome, Edge, Safari) */
+*::-webkit-scrollbar {
+    width: 6px; /* Grosor del scroll */
+    height: 6px; /* Scroll horizontal */
+}
+
+*::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2); /* Color del "pulgar" */
+    border-radius: 4px; /* Bordes redondeados */
+}
+
+*::-webkit-scrollbar-track {
+    background: transparent; /* Fondo transparente */
+}
+
+/* En pantallas pequeñas (móviles), mantener scroll visible */
+@media (max-width: 768px) {
+    * {
+        scrollbar-width: thin;
+        scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+    }
+
+    *::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.3);
+    }
+}
+
+  </style>
 </html>

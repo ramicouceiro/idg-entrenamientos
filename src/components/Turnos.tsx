@@ -66,15 +66,20 @@ const Turnos: React.FC = () => {
     if (error) return <p className="text-red-500">{error}</p>;
 
     return (
-        <div className="p-4 bg-gray-900 mt-0 xl:mt-5 rounded-xl h-auto">
+        <div className="p-4 bg-gray-900 mt-0 rounded-xl h-[calc(100vh-2rem)] flex flex-col">
             <h2 className="text-xl font-bold text-white">Agenda</h2>
             <p className="mb-2 text-gray-400">Agenda tu turno aquí</p>
-            <div className="relative overflow-x-hidden">
-                <div className="flex overflow-x-auto space-x-4 p-2 scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800 w-full max-w-full no-scrollbar snap-x snap-mandatory">
+
+            {/* Contenedor flexible para aprovechar el espacio restante */}
+            <div className="relative flex-1 overflow-hidden">
+                {/* Scroll horizontal en móviles */}
+                <div className="flex overflow-x-auto space-x-4 p-2 w-full max-w-full no-scrollbar snap-x snap-mandatory">
                     {filteredDays.map(({ day, name }) => (
-                        <div key={day} className="bg-gray-800 shadow-md rounded-lg p-4 min-w-[250px] flex-shrink-0 snap-start">
+                        <div key={day} className="bg-gray-800 shadow-md rounded-lg p-4 min-w-[250px] flex-shrink-0 snap-start flex flex-col h-full max-h-full overflow-hidden">
                             <h3 className="text-lg font-semibold text-white mb-3">{name} {day}</h3>
-                            <div className="flex flex-col gap-4 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-600 h-auto">
+
+                            {/* Contenedor con scroll si hay demasiados horarios */}
+                            <div className="flex flex-col gap-4 overflow-y-auto flex-grow max-h-[60vh] sm:max-h-[75vh] custom-scroll">
                                 {horariosDisponibles
                                     .filter(horario => horario.dia_semana === name && horario.cupo_disponible > 0)
                                     .map((horario, index) => (
