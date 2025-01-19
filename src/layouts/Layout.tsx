@@ -103,9 +103,9 @@ const Layout: React.FC<LayoutProps> = ({ children, user }) => {
         <Link to="/videos" className={`flex flex-col items-center w-full h-full hover:text-green-500 pb-14 pt-10 ${isActive('/videos') ? 'text-green-500 bg-gray-700' : 'text-white'}`}>
           <MdSlowMotionVideo />
         </Link>
-        <Link to="/paquetes" className={`flex flex-col items-center w-full h-full hover:text-green-500 pb-14 pt-10 ${isActive('/videos') ? 'text-green-500 bg-gray-700' : 'text-white'}`}>
-            <FiPackage />
-          </Link>
+        <Link to="/paquetes" className={`flex flex-col items-center w-full h-full hover:text-green-500 pb-14 pt-10 ${isActive('/paquetes') ? 'text-green-500 bg-gray-700' : 'text-white'}`}>
+          <FiPackage />
+        </Link>
         {isAdmin && (
           <Link to="/admin" className={`flex flex-col items-center w-full h-full hover:text-green-500 pb-14 pt-10 ${isActive('/admin') ? 'text-green-500 bg-gray-700' : 'text-white'}`}>
             <FaUserShield />
