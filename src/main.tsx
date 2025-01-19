@@ -17,6 +17,7 @@ import TurnosPage from './routes/turnos'
 import VideosPage from './routes/videos'
 import PaquetesPage from './routes/paquetes'
 import CrearHorariosPage from './routes/crearHorarios'
+import DisciplinasPage from './routes/disciplinas'
 
 const router = createBrowserRouter([
   {
@@ -39,7 +40,7 @@ const router = createBrowserRouter([
       {
         path: 'admin',
         element: <AdminPage />,
-        children: [{ path: 'horarios', element: <CrearHorariosPage /> }],
+        children: [{ path: 'horarios', element: <CrearHorariosPage /> }, {path: 'disciplinas', element: <DisciplinasPage />}],
       },
     ],
   },

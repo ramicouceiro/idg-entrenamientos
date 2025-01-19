@@ -26,9 +26,11 @@ export default function AdminPage() {
                                 <h3 className="text-xl font-bold">Horarios</h3>
                             </div>
                         </Link>
-                        <div className="bg-gray-800 rounded-xl p-5 mt-5 flex justify-between cursor-pointer">
-                            <h3 className="text-xl font-bold">Roles</h3>
-                        </div>
+                        <Link to="/admin/disciplinas">
+                            <div className="bg-gray-800 rounded-xl p-5 mt-5 flex text-white justify-between cursor-pointer">
+                                <h3 className="text-xl font-bold">Disciplinas</h3>
+                            </div>
+                        </Link>
                     </div>
 
                     {/* 🔥 Aquí se renderizarán las subrutas como /admin/horarios */}
