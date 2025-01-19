@@ -2,6 +2,7 @@ import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
 import Swal from 'sweetalert2';
 import { useUser } from '@clerk/clerk-react';
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 const API_URL = import.meta.env.VITE_API_URL;
 
 interface Reserva {
@@ -108,13 +109,19 @@ export default function MisTurnos() {
                     <h2 className="text-2xl font-bold">📅 Mis Turnos</h2>
                     <p className="text-gray-400">Administra tus turnos aquí</p>
                 </div>
-                <div>
-                    <div className='bg-green-500 hover:bg-green-700 h-10 w-10 flex justify-center items-center rounded-full hover:cursor-pointer transition-all'>
+                <Link to="/turnos">
+                    <div className='bg-green-500 hover:bg-green-700 h-10 w-10 flex text-white justify-center items-center rounded-full hover:cursor-pointer transition-all'>
                         <FaPlus />
                     </div>
-                </div>
+                </Link>
             </div>
-
+            {
+                horarios.length === 0 && !loading && (
+                    <div className="mt-5 w-full text-center flex items-center justify-center">
+                        <p className="text-gray-400">No tienes turnos reservados</p>
+                    </div>
+                )
+            }
             {/* Muestra el Skeleton mientras carga */}
             {loading ? (
                 <div className="space-y-4 mt-5">
