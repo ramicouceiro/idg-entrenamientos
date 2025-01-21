@@ -8,6 +8,21 @@ interface Horario {
     dia_semana: string;
     hora: string;
     cupo_disponible: number;
+    disciplina_id: number;
+}
+
+interface Reserva {
+    id: number;
+    fecha: string;
+    horario_id: number;
+    clerk_user_id: string;
+    disciplina: string;
+    hora: string;
+}
+
+interface Disciplina {
+    id: number;
+    nombre: string;
 }
 
 // Genera los días restantes del mes
@@ -31,6 +46,8 @@ const Turnos: React.FC = () => {
     const [horariosDisponibles, setHorariosDisponibles] = useState<Horario[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [disciplinas, setDisciplinas] = useState<Disciplina[]>([]);
+    const [reservas, setReservas] = useState<Reserva[]>([]);
     const { user } = useUser();
     const clerkUserId = user?.id;
 
@@ -39,24 +56,32 @@ const Turnos: React.FC = () => {
 
     useEffect(() => {
         const fetchHorarios = async () => {
+            if (!clerkUserId) return; // ⬅ Evitar ejecutar la petición si aún no hay usuario
+    
+            setLoading(true);
             try {
+                const reservasUsr = await getTurnosByUser(clerkUserId);
+                setReservas(reservasUsr);
+    
+                const dataDisciplinas: Disciplina[] = await getDisciplinas();
+                setDisciplinas(dataDisciplinas);
+    
                 const data: Horario[] = await getCuposDisponibles();
                 setHorariosDisponibles(data);
             } catch (err) {
-                setError("Error obteniendo horarios" + err);
+                setError("Error obteniendo horarios: " + err);
             } finally {
                 setLoading(false);
             }
         };
-
+    
         fetchHorarios();
-    }, []);
+    }, [clerkUserId]);
 
     const handleReserva = async (horario: Horario, day: number) => {
-        // Obtener la fecha real de la reserva en formato YYYY-MM-DD
         const today = new Date();
         const year = today.getFullYear();
-        const month = today.getMonth() + 1; // Enero es 0, sumamos 1
+        const month = today.getMonth() + 1;
         const formattedDate = `${year}-${month.toString().padStart(2, "0")}-${day.toString().padStart(2, "0")}`;
     
         console.log("Fecha de la reserva enviada:", formattedDate);
@@ -77,13 +102,26 @@ const Turnos: React.FC = () => {
         if (result.isConfirmed) {
             try {
                 await reservarTurno(formattedDate, horario.id, clerkUserId);
-                
-                // Actualizar la UI restando un cupo disponible
+    
+                // 🔹 Actualizar cupos disponibles
                 setHorariosDisponibles((prevHorarios) =>
                     prevHorarios.map((h) =>
                         h.id === horario.id ? { ...h, cupo_disponible: h.cupo_disponible - 1 } : h
                     )
                 );
+    
+                // 🔹 Agregar la nueva reserva al estado sin necesidad de recargar la página
+                setReservas((prevReservas) => [
+                    ...prevReservas,
+                    {
+                        id: Date.now(), // Generar un ID temporal
+                        fecha: formattedDate,
+                        horario_id: horario.id,
+                        clerk_user_id: clerkUserId!,
+                        disciplina: disciplinas.find(d => d.id === horario.disciplina_id)?.nombre || "",
+                        hora: horario.hora,
+                    },
+                ]);
     
                 Swal.fire({
                     title: "Reserva Confirmada",
@@ -107,6 +145,52 @@ const Turnos: React.FC = () => {
         }
     };
 
+    const handleDeleteReserva = async (id: number) => {
+        const result = await Swal.fire({
+            title: "¿Estás seguro de que quieres cancelar el turno?",
+            showCancelButton: true,
+            confirmButtonText: "Cancelar Turno",
+            cancelButtonText: "Cancelar",
+            icon: "warning",
+            background: "#1F2937",
+            color: "#FFFFFF",
+            confirmButtonColor: "#EF4444",
+            denyButtonColor: "#9CA3AF",
+            customClass: {
+                popup: 'custom-swal-popup',
+                title: 'custom-swal-title',
+                confirmButton: 'custom-swal-confirm',
+                denyButton: 'custom-swal-deny',
+            }
+        });
+
+        if (result.isConfirmed) {
+            try {
+                await deleteReserva(id);
+                setReservas((prevReservas) => prevReservas.filter((reserva) => reserva.id !== id));
+                Swal.fire({
+                    title: "Turno cancelado",
+                    text: "Tu turno fue cancelado correctamente.",
+                    icon: "success",
+                    background: "#1F2937",
+                    color: "#FFFFFF",
+                    confirmButtonColor: "#22C55E"
+                });
+            } catch (error) {
+                console.error("Error eliminando la reserva:", error);
+                Swal.fire({
+                    title: "Error",
+                    text: "No se pudo cancelar el turno.",
+                    icon: "error",
+                    background: "#1F2937",
+                    color: "#FFFFFF",
+                    confirmButtonColor: "#EF4444"
+                });
+            }
+        }
+    };
+    
+
     // Filtrar los días con horarios futuros
     const filteredDays = days.filter(({ day, name }) => {
         const horarios = horariosDisponibles.filter(horario => horario.dia_semana === name);
@@ -121,9 +205,8 @@ const Turnos: React.FC = () => {
         return horariosFuturos.length > 0;
     });
 
-    if (loading) return <div className="w-full h-full flex justify-center items-center"><div
-    className="w-10 h-10 border-4 border-t-blue-500 border-gray-300 rounded-full animate-spin"
-  ></div></div>;
+    if (loading && !clerkUserId) return <div className="w-full h-full flex justify-center items-center"><div
+    className="w-10 h-10 border-4 border-t-blue-500 border-gray-300 rounded-full animate-spin"></div></div>;
     if (error) return <p className="text-red-500">{error}</p>;
 
     return (
@@ -143,17 +226,26 @@ const Turnos: React.FC = () => {
                             <div className="flex flex-col gap-4 overflow-y-auto flex-grow max-h-[60vh] sm:max-h-[75vh] custom-scroll">
                                 {horariosDisponibles
                                     .filter(horario => horario.dia_semana === name && horario.cupo_disponible > 0)
-                                    .map((horario, index) => (
-                                        <div
-                                            key={index}
-                                            className="p-2 xl:p-4 border border-gray-200 rounded-lg shadow-sm bg-gray-700 cursor-pointer hover:bg-gray-600 transition"
-                                            onClick={() => handleReserva(horario, day)}
-                                        >
-                                            <p className="text-lg font-semibold text-green-400">{horario.hora}</p>
-                                            <p className="text-md text-white">Fuerza y Acondicionamiento</p>
-                                            <p className="text-sm text-gray-400">Cupos disponibles: {horario.cupo_disponible}</p>
-                                        </div>
-                                    ))}
+                                    .map((horario, index) => {
+                                        const userReserva = reservas.find(reserva => reserva.horario_id === horario.id);
+                                        return (
+                                            <div
+                                                key={index}
+                                                className={`p-2 xl:p-4 border border-gray-200 rounded-lg shadow-sm cursor-pointer transition ${userReserva ? 'bg-green-700' : 'bg-gray-700 hover:bg-gray-600'}`}
+                                                onClick={() => {
+                                                    if (userReserva) {
+                                                        handleDeleteReserva(userReserva.id);
+                                                    } else {
+                                                        handleReserva(horario, day);
+                                                    }
+                                                }}
+                                            >
+                                                <p className="text-lg font-semibold text-green-400">{horario.hora}</p>
+                                                <p className="text-md text-white">{disciplinas.find(disciplina => disciplina.id === horario.disciplina_id)?.nombre}</p>
+                                                <p className="text-sm text-gray-400">Cupos disponibles: {horario.cupo_disponible}</p>
+                                            </div>
+                                        );
+                                    })}
                             </div>
                         </div>
                     ))}
@@ -188,5 +280,46 @@ async function getCuposDisponibles(): Promise<Horario[]> {
         return [];
     }
 }
+
+async function getDisciplinas(): Promise<Disciplina[]> {
+    try {
+        const response = await fetch(`${API_URL}/api/disciplinas/getDisciplinas`);
+        if (!response.ok) throw new Error("Error obteniendo disciplinas");
+        return await response.json();
+    } catch (error) {
+        console.error(error);
+        return [];
+    }
+}
+
+async function getTurnosByUser(clerkUserId: string): Promise<Reserva[]> {
+    const response = await fetch(`${API_URL}/api/reservas/getReservasByIdUsr`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ clerkUserId }),
+    });
+
+    if (!response.ok) {
+        throw new Error(`Error en la petición: ${response.status} ${response.statusText}`);
+    }
+
+    return await response.json();
+}
+
+async function deleteReserva(id: number): Promise<void> {
+    const response = await fetch(`${API_URL}/api/reservas/deleteReserva`, {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id }),
+    });
+
+    if (!response.ok) {
+        throw new Error(`Error en la eliminación: ${response.status} ${response.statusText}`);
+    }
+};
 
 export default Turnos;
