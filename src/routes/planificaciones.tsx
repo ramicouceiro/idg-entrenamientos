@@ -9,7 +9,7 @@ export default function PlanificacionesPage() {
   const { user } = useUser();
   return (
     <Layout user={user}>
-      <main className="bg-gray-800 text-white p-6">
+      <main className="bg-gray-800 text-white p-2 xl:p-6 mb-24 xl:mb-0">
         <h1 className="text-2xl font-bold mb-4">Planificaciones</h1>
 
         {/* Mostrar la lista de días */}
