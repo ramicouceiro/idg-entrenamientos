@@ -1,21 +1,45 @@
-import { useState } from "react";
-import { mockPlanificaciones, Planificacion } from "../lib/mockPlanificaciones";
+import { useEffect, useState } from "react";
+import { Planificacion, Dias } from "../lib/mockPlanificaciones";
 import Layout from "../layouts/Layout";
 import { PlanificacionDetail } from "../components/Planificaciones/PlanificacionDetail";
 import { useUser } from "@clerk/clerk-react";
+const API_URL = import.meta.env.VITE_API_URL;
 
 export default function PlanificacionesPage() {
   const [selectedPlan, setSelectedPlan] = useState<Planificacion | null>(null);
+  const [selectedDia, setSelectedDia] = useState<Dias | null>(null);
+  const [planificaciones, setPlanificaciones] = useState<Planificacion[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
   const { user } = useUser();
+  const clerkUserId = user?.id;
+
+  useEffect(() => {
+    const fetchPlanificaciones = async () => {
+      if (!clerkUserId) return; // ⬅ Evitar ejecutar la petición si aún no hay usuario
+      setLoading(true);
+      try {
+          const planificaciones = await getPlanificacionesByIdUsr(clerkUserId);
+          setPlanificaciones(planificaciones);
+      } catch (err) {
+          console.log(err);
+      } finally {
+          setLoading(false);
+      }
+  };
+
+  fetchPlanificaciones();
+  }, [clerkUserId]);
+
   return (
     <Layout user={user}>
       <main className="bg-gray-800 text-white p-2 xl:p-6 mb-24 xl:mb-0">
         <h1 className="text-2xl font-bold mb-4">Planificaciones</h1>
 
-        {/* Mostrar la lista de días */}
-        {!selectedPlan ? (
+        {loading ? (
+          <p className="text-center">Cargando planificaciones...</p>
+        ) : !selectedPlan ? (
           <div>
-            {mockPlanificaciones.map((plan) => (
+            {planificaciones.map((plan) => (
               <button
                 key={plan.id}
                 className="block bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-md mb-2 w-full text-left"
@@ -25,19 +49,58 @@ export default function PlanificacionesPage() {
               </button>
             ))}
           </div>
-        ) : (
-          // Mostrar los bloques de un día si se seleccionó
+        ) : !selectedDia ? (
           <div>
             <button
               className="mb-4 bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-md"
               onClick={() => setSelectedPlan(null)}
             >
-              ⬅ Volver
+              ⬅ Volver a Planificaciones
             </button>
-            <PlanificacionDetail planificacion={selectedPlan} />
+            <h2 className="text-xl font-semibold mb-3">{selectedPlan.nombre}</h2>
+            {selectedPlan.dias.map((dia) => (
+              <button
+                key={dia.id}
+                className="block bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-md mb-2 w-full text-left"
+                onClick={() => setSelectedDia(dia)}
+              >
+                {dia.nombre}
+              </button>
+            ))}
+          </div>
+        ) : (
+          <div>
+            <button
+              className="mb-4 bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-md"
+              onClick={() => setSelectedDia(null)}
+            >
+              ⬅ Volver a {selectedPlan.nombre}
+            </button>
+            <h2 className="text-xl font-semibold mb-3">{selectedDia.nombre}</h2>
+            <PlanificacionDetail dia={selectedDia} />
           </div>
         )}
       </main>
     </Layout>
   );
+}
+
+const getPlanificacionesByIdUsr = async (clerkUserId : string) =>{
+  try {
+    const response = await fetch(`${API_URL}/api/planificaciones/getPlanificaciones`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({clerkUserId}),
+    });
+    if (!response.ok) {
+      throw new Error(`Error al obtener planificaciones: ${response.status} ${response.statusText}`);
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching planificaciones:", error);
+    return [];
+  }
 }

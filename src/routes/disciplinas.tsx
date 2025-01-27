@@ -72,7 +72,7 @@ export default function DisciplinasPage() {
     return (
         <div className="mt-5 bg-gray-900 rounded-xl p-5 w-full">
             <div className="flex justify-between items-center">
-                <h1 className="text-2xl font-bold">🏋️‍♂️ Disciplinas</h1>
+                <h1 className="text-2xl font-bold">🤾‍♂️ Disciplinas</h1>
                 <div 
                     className='bg-green-500 hover:bg-green-700 h-10 w-10 flex text-white justify-center items-center rounded-full hover:cursor-pointer transition-all'
                     onClick={() => handleOpenModal("add")}

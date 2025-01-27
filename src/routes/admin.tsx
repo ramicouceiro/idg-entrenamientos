@@ -17,18 +17,18 @@ export default function AdminPage() {
         <Layout user={user}>
             {isAdmin ? (
                 <div className="bg-gray-800 text-white p-6 w-full">
-                    <h1 className="text-2xl font-bold mb-5">👋 Buenos días {user?.firstName}!</h1>
+                    <h1 className="text-2xl font-bold mb-5">Administración</h1>
                     <div className="bg-gray-900 rounded-xl p-5 w-full">
-                        <h2 className="text-2xl font-bold">🏋️‍♂️ Admin</h2>
+                        <h2 className="text-2xl font-bold">⚙️ Configuración</h2>
                         <p className="text-gray-400">Administra la app aquí</p>
                         <Link to="/admin/horarios">
                             <div className="bg-gray-800 rounded-xl p-5 mt-5 flex text-white justify-between cursor-pointer">
-                                <h3 className="text-xl font-bold">Horarios</h3>
+                                <h3 className="text-xl font-bold">📅 Crear horarios</h3>
                             </div>
                         </Link>
                         <Link to="/admin/disciplinas">
                             <div className="bg-gray-800 rounded-xl p-5 mt-5 flex text-white justify-between cursor-pointer">
-                                <h3 className="text-xl font-bold">Disciplinas</h3>
+                                <h3 className="text-xl font-bold">🤾‍♂️ Disciplinas</h3>
                             </div>
                         </Link>
                     </div>

@@ -87,7 +87,7 @@ const CrearHorariosPage: React.FC = () => {
     return (
         <div className="w-full p-6 bg-gray-900 text-white mt-5 rounded-xl mb-28">
             <div className="flex justify-between">
-                <h2 className="text-2xl font-bold">🏋️‍♂️ Crear Horarios</h2>
+                <h2 className="text-2xl font-bold">📅 Crear Horarios</h2>
                 <div onClick={handleOpenModal}>
                     <div className='bg-green-500 hover:bg-green-700 h-10 w-10 flex justify-center items-center rounded-full hover:cursor-pointer transition-all'>
                         <FaPlus />

@@ -73,7 +73,7 @@ const Layout: React.FC<LayoutProps> = ({ children, user }) => {
             <span className="hidden md:inline">Paquetes</span>
           </Link>
           {isAdmin && (
-            <Link to="/admin" className={`flex items-center gap-3 hover:bg-gray-700 hover:text-green-500 px-4 py-4 rounded-lg transition-all ${isActive('/admin') ? 'text-green-500' : 'text-white'}`}>
+            <Link to="/admin" className={`flex items-center gap-3 hover:bg-gray-700 hover:text-green-500 px-4 py-4 rounded-lg transition-all ${(location.pathname.startsWith('/admin')) ? 'text-green-500' : 'text-white'}`}>
               <FaUserShield />
               <span className="hidden md:inline">Administrador</span>
             </Link>

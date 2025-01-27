@@ -25,15 +25,27 @@ interface Disciplina {
     nombre: string;
 }
 
-// Genera los días restantes del mes
+// Genera los días restantes del mes y, a partir del día 28, también los días del mes siguiente
 const generateMonthDays = () => {
     const today = new Date().getDate();
     const daysInMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate();
-    return Array.from({ length: daysInMonth - today + 1 }, (_, i) => {
+    const days = Array.from({ length: daysInMonth - today + 1 }, (_, i) => {
         const date = new Date(new Date().getFullYear(), new Date().getMonth(), today + i);
         const dayName = date.toLocaleDateString("es-ES", { weekday: "long" });
         return { day: today + i, name: dayName.charAt(0).toUpperCase() + dayName.slice(1).toLowerCase() };
     });
+
+    // Si hoy es 28 o más, agregar los días del mes siguiente
+    if (today >= 27) {
+        const nextMonthDays = Array.from({ length: 30 }, (_, i) => {
+            const date = new Date(new Date().getFullYear(), new Date().getMonth() + 1, i + 1);
+            const dayName = date.toLocaleDateString("es-ES", { weekday: "long" });
+            return { day: i + 1, name: dayName.charAt(0).toUpperCase() + dayName.slice(1).toLowerCase() };
+        });
+        days.push(...nextMonthDays);
+    }
+
+    return days;
 };
 
 // Obtiene la hora actual en minutos
