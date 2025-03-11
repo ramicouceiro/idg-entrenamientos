@@ -10,10 +10,7 @@ export default function DashboardContent({ user }: { user: UserResource | null |
       {isAdmin ? (
         <div className="flex gap-5 lg:flex-row flex-col flex-wrap">
           <MisTurnos />
-          <div className="bg-gray-900 rounded-xl p-5 basis-full xl:basis-1/4">
-            <h2 className="text-2xl font-bold">🏋️‍♂️ Planificaciones</h2>
-            <p className="text-gray-400">Administra tus planificaciones aquí</p>
-          </div>
+          <MisPlanificaciones />
         </div>
       ) : (
         <div className="flex gap-5 xl:flex-row flex-col flex-wrap">

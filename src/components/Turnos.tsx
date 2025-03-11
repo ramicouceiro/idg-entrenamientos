@@ -233,31 +233,32 @@ const Turnos: React.FC = () => {
                     {filteredDays.map(({ day, name }) => (
                         <div key={day} className="bg-gray-800 shadow-md rounded-lg p-4 min-w-[250px] flex-shrink-0 snap-start flex flex-col h-full max-h-full overflow-hidden">
                             <h3 className="text-lg font-semibold text-white mb-3">{name} {day}</h3>
-
                             {/* Contenedor con scroll si hay demasiados horarios */}
                             <div className="flex flex-col gap-4 overflow-y-auto flex-grow max-h-[60vh] sm:max-h-[75vh] custom-scroll">
-                                {horariosDisponibles
-                                    .filter(horario => horario.dia_semana === name && horario.cupo_disponible > 0)
-                                    .map((horario, index) => {
-                                        const userReserva = reservas.find(reserva => reserva.horario_id === horario.id);
-                                        return (
-                                            <div
-                                                key={index}
-                                                className={`p-2 xl:p-4 border border-gray-200 rounded-lg shadow-sm cursor-pointer transition ${userReserva ? 'bg-green-700' : 'bg-gray-700 hover:bg-gray-600'}`}
-                                                onClick={() => {
-                                                    if (userReserva) {
-                                                        handleDeleteReserva(userReserva.id);
-                                                    } else {
-                                                        handleReserva(horario, day);
-                                                    }
-                                                }}
-                                            >
-                                                <p className="text-lg font-semibold text-green-400">{horario.hora}</p>
-                                                <p className="text-md text-white">{disciplinas.find(disciplina => disciplina.id === horario.disciplina_id)?.nombre}</p>
-                                                <p className="text-sm text-gray-400">Cupos disponibles: {horario.cupo_disponible}</p>
-                                            </div>
-                                        );
-                                    })}
+                            {horariosDisponibles
+                                .filter(horario => horario.dia_semana === name && horario.cupo_disponible > 0)
+                                .map((horario, index) => {
+                                    const formattedDate = `${new Date().getFullYear()}-${(new Date().getMonth() + 1).toString().padStart(2, "0")}-${day.toString().padStart(2, "0")}`;
+                                    const userReserva = reservas.find(reserva => reserva.horario_id === horario.id && reserva.fecha === formattedDate);
+                                    
+                                    return (
+                                        <div
+                                            key={index}
+                                            className={`p-2 xl:p-4 border border-gray-200 rounded-lg shadow-sm cursor-pointer transition ${userReserva ? 'bg-green-700' : 'bg-gray-700 hover:bg-gray-600'}`}
+                                            onClick={() => {
+                                                if (userReserva) {
+                                                    handleDeleteReserva(userReserva.id);
+                                                } else {
+                                                    handleReserva(horario, day);
+                                                }
+                                            }}
+                                        >
+                                            <p className="text-lg font-semibold text-green-400">{horario.hora}</p>
+                                            <p className="text-md text-white">{disciplinas.find(disciplina => disciplina.id === horario.disciplina_id)?.nombre}</p>
+                                            <p className="text-sm text-gray-400">Cupos disponibles: {horario.cupo_disponible}</p>
+                                        </div>
+                                    );
+                                })}
                             </div>
                         </div>
                     ))}

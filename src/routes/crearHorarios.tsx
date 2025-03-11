@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { FaPlus } from "react-icons/fa";
+import { FaPlus, FaTrash } from "react-icons/fa";
 const API_URL = import.meta.env.VITE_API_URL;
 
 interface Horario {
@@ -26,7 +26,8 @@ const CrearHorariosPage: React.FC = () => {
         disciplina_id: 0,
         cupo_maximo: 0,
     });
-
+    const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+    const [horarioToDelete, setHorarioToDelete] = useState<Horario | null>(null);
     useEffect(() => {
         getHorarios().then((data: Horario[]) => {
             setHorarios(data);
@@ -82,6 +83,13 @@ const CrearHorariosPage: React.FC = () => {
         }
     };
 
+    const handleDeleteHorario = async () => {
+        await deleteHorario(horarioToDelete!);
+        setHorarios(horarios.filter((horario) => horario.id !== horarioToDelete!.id));
+        setDeleteModalOpen(false);
+        setHorarioToDelete(null);
+    };
+
     const groupedHorarios = groupHorariosByDay(horarios);
 
     return (
@@ -101,9 +109,15 @@ const CrearHorariosPage: React.FC = () => {
                         <div key={day} className="bg-gray-800 shadow-md rounded-lg p-4 min-w-[250px] flex-shrink-0 snap-start">
                             <h3 className="text-lg font-semibold text-white mb-3">{day}</h3>
                             <div className="flex flex-col gap-4 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-600 h-auto">
-                                {horarios.map((horario, index) => (
-                                    <div key={index} className="p-2 xl:p-4 border border-gray-200 rounded-lg shadow-sm bg-gray-700">
-                                        <p className="text-lg font-semibold text-green-400">{horario.hora}</p>
+                                {horarios.map((horario) => (
+                                    <div key={horario.id} className="flex flex-col p-2 xl:p-4 border border-gray-200 rounded-lg shadow-sm bg-gray-700">
+                                        <div className="flex justify-between items-center">
+                                            <p className="text-lg font-semibold text-green-400">{horario.hora}</p>
+                                            <div className="cursor-pointer hover:text-red-500 transition-all mb-2" onClick={() => {
+                                                setDeleteModalOpen(true);
+                                                setHorarioToDelete(horario);
+                                                }}><FaTrash/></div>
+                                        </div>
                                         <p className="text-md text-white">{getNombreDisciplina(horario.disciplina_id)}</p>
                                         <p className="text-md text-white">Cupo Máximo: {horario.cupo_maximo}</p>
                                     </div>
@@ -152,6 +166,19 @@ const CrearHorariosPage: React.FC = () => {
                     </div>
                 </div>
             )}
+            {/*Modal de confirmacion para eliminar horario */}
+            {(deleteModalOpen && horarioToDelete) && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                    <div className="bg-gray-800 p-6 rounded-lg w-96">
+                        <h2 className="text-xl font-bold text-white mb-4">Eliminar Horario</h2>
+                        <p className="text-white">¿Estás seguro de que deseas eliminar este horario?</p>
+                        <div className="flex justify-between mt-4">
+                            <button onClick={() => setDeleteModalOpen(false)} className="bg-red-500 hover:bg-red-700 text-white px-4 py-2 rounded">Cancelar</button>
+                            <button onClick={handleDeleteHorario} className="bg-green-500 hover:bg-green-700 text-white px-4 py-2 rounded">Eliminar</button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
@@ -190,6 +217,21 @@ async function getDisciplinas() {
     } catch (error) {
         console.error(error);
         return [];
+    }
+}
+
+async function deleteHorario(horario: Horario) {
+    try {
+        const response = await fetch(API_URL + "/api/horarios/deleteHorario", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(horario),
+        });
+        if (!response.ok) throw new Error("Error eliminando horario");
+        return await response.json();
+    } catch (error) {
+        console.error(error);
+        return null;
     }
 }
 

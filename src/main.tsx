@@ -18,6 +18,7 @@ import VideosPage from './routes/videos'
 import PaquetesPage from './routes/paquetes'
 import CrearHorariosPage from './routes/crearHorarios'
 import DisciplinasPage from './routes/disciplinas'
+import CrearPlanificacionesPage from './routes/crearPlanificaciones'
 
 const router = createBrowserRouter([
   {
@@ -40,7 +41,7 @@ const router = createBrowserRouter([
       {
         path: 'admin',
         element: <AdminPage />,
-        children: [{ path: 'horarios', element: <CrearHorariosPage /> }, {path: 'disciplinas', element: <DisciplinasPage />}],
+        children: [{ path: 'horarios', element: <CrearHorariosPage /> }, {path: 'disciplinas', element: <DisciplinasPage />}, {path: 'planificaciones', element: <CrearPlanificacionesPage />} ],
       },
     ],
   },
