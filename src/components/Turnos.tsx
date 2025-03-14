@@ -244,7 +244,7 @@ const Turnos: React.FC = () => {
                                     return (
                                         <div
                                             key={index}
-                                            className={`p-2 xl:p-4 border border-gray-200 rounded-lg shadow-sm cursor-pointer transition ${userReserva ? 'bg-green-700' : 'bg-gray-700 hover:bg-gray-600'}`}
+                                            className={`p-2 xl:p-4 rounded-lg shadow-sm cursor-pointer transition ${userReserva ? 'bg-green-700' : 'bg-gray-700 hover:bg-gray-600'}`}
                                             onClick={() => {
                                                 if (userReserva) {
                                                     handleDeleteReserva(userReserva.id);
@@ -285,7 +285,7 @@ async function reservarTurno(fecha: string, horarioId: number, clerkUserId: stri
 
 async function getCuposDisponibles(): Promise<Horario[]> {
     try {
-        const response = await fetch(`${API_URL}/api/reservas/getCuposDisponibles`);
+        const response = await fetch(`${API_URL}/api/horarios/getCuposDisponibles`);
         if (!response.ok) throw new Error("Error obteniendo horarios");
         return await response.json();
     } catch (error) {

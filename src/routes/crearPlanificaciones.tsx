@@ -1,4 +1,6 @@
 import { useState } from "react";
+import axios from "axios";
+const API_URL = import.meta.env.VITE_API_URL;
 
 interface Serie {
   numero: number;
@@ -29,6 +31,7 @@ export default function CrearPlanificacionesPage() {
   const [nombrePlan, setNombrePlan] = useState("");
   const [dias, setDias] = useState<Dia[]>([]);
   const [diaActivo, setDiaActivo] = useState<number | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const agregarDia = () => {
     const nuevoDia = { id: crypto.randomUUID(), nombre: "Nuevo Día", bloques: [] };
@@ -62,6 +65,32 @@ export default function CrearPlanificacionesPage() {
       peso: 0,
     });
     setDias(nuevosDias);
+  };
+
+  const enviarPlanificacion = async () => {
+    try {
+      setIsSubmitting(true);
+      const response = await axios.post(`${API_URL}/api/planificaciones/createPlanificacion`, {
+        nombre: nombrePlan,
+        dias: dias
+      });
+      
+      if (response.status === 201) {
+        alert('Planificación guardada exitosamente');
+        // Reset form
+        setNombrePlan('');
+        setDias([]);
+        setDiaActivo(null);
+      }
+    } catch (error: unknown) {
+      console.error('Error al guardar la planificación:', error);
+      const errorMessage = axios.isAxiosError(error) 
+        ? error.response?.data?.error || 'Error al guardar la planificación'
+        : 'Error al guardar la planificación';
+      alert(errorMessage);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -187,6 +216,16 @@ export default function CrearPlanificacionesPage() {
           ))}
         </div>
       )}
+      
+      <div className="mt-6 flex justify-end">
+        <button
+          onClick={enviarPlanificacion}
+          disabled={isSubmitting || !nombrePlan || dias.length === 0}
+          className="bg-green-500 hover:bg-green-600 disabled:bg-gray-500 disabled:cursor-not-allowed text-white px-6 py-2 rounded-lg font-semibold"
+        >
+          {isSubmitting ? 'Guardando...' : 'Guardar Planificación'}
+        </button>
+      </div>
     </div>
   );
 }
