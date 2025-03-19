@@ -16,12 +16,12 @@ export default function DashboardPage() {
     const fetchData = async () => {
       if (!clerkUserId) return;
       try {
-        if(!planificaciones){
+        if(!planificaciones.length){
           const planificaciones = await getPlanificacionesByIdUsr(clerkUserId);
           setPlanificaciones(planificaciones);
         }
 
-        if(!turnos){
+        if(!turnos.length){
           const turnos = await getTurnosByUser(clerkUserId);
           for (const turno of turnos) {
             const horaDisciplina = await getHoraDisciplinaById(turno.horario_id);
@@ -35,7 +35,7 @@ export default function DashboardPage() {
       }
     };
     fetchData();
-  }, [clerkUserId, planificaciones, setPlanificaciones, setTurnos, turnos]);
+  }, [clerkUserId, setPlanificaciones, setTurnos, planificaciones, turnos]);
 
   return (
     <Layout user={user}>
