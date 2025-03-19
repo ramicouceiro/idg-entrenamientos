@@ -1,6 +1,7 @@
 import { useUser } from "@clerk/clerk-react";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
+import { useTurnosStore } from "../stores/turnosStore";
 const API_URL = import.meta.env.VITE_API_URL;
 
 interface Horario {
@@ -9,15 +10,6 @@ interface Horario {
     hora: string;
     cupo_disponible: number;
     disciplina_id: number;
-}
-
-interface Reserva {
-    id: number;
-    fecha: string;
-    horario_id: number;
-    clerk_user_id: string;
-    disciplina: string;
-    hora: string;
 }
 
 interface Disciplina {
@@ -59,7 +51,7 @@ const Turnos: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [disciplinas, setDisciplinas] = useState<Disciplina[]>([]);
-    const [reservas, setReservas] = useState<Reserva[]>([]);
+    const { turnos, setTurnos } = useTurnosStore();
     const { user } = useUser();
     const clerkUserId = user?.id;
 
@@ -72,8 +64,8 @@ const Turnos: React.FC = () => {
     
             setLoading(true);
             try {
-                const reservasUsr = await getTurnosByUser(clerkUserId);
-                setReservas(reservasUsr);
+                // const reservasUsr = await getTurnosByUser(clerkUserId);
+                // setReservas(reservasUsr);
     
                 const dataDisciplinas: Disciplina[] = await getDisciplinas();
                 setDisciplinas(dataDisciplinas);
@@ -123,8 +115,8 @@ const Turnos: React.FC = () => {
                 );
     
                 // 🔹 Agregar la nueva reserva al estado sin necesidad de recargar la página
-                setReservas((prevReservas) => [
-                    ...prevReservas,
+                setTurnos((prevTurnos) => [
+                    ...prevTurnos,
                     {
                         id: Date.now(), // Generar un ID temporal
                         fecha: formattedDate,
@@ -179,7 +171,7 @@ const Turnos: React.FC = () => {
         if (result.isConfirmed) {
             try {
                 await deleteReserva(id);
-                setReservas((prevReservas) => prevReservas.filter((reserva) => reserva.id !== id));
+                setTurnos((setTurnos) => setTurnos.filter((turno) => turno.id !== id));
                 Swal.fire({
                     title: "Turno cancelado",
                     text: "Tu turno fue cancelado correctamente.",
@@ -239,7 +231,7 @@ const Turnos: React.FC = () => {
                                 .filter(horario => horario.dia_semana === name && horario.cupo_disponible > 0)
                                 .map((horario, index) => {
                                     const formattedDate = `${new Date().getFullYear()}-${(new Date().getMonth() + 1).toString().padStart(2, "0")}-${day.toString().padStart(2, "0")}`;
-                                    const userReserva = reservas.find(reserva => reserva.horario_id === horario.id && reserva.fecha === formattedDate);
+                                    const userReserva = turnos.find(turno => turno.horario_id === horario.id && turno.fecha === formattedDate);
                                     
                                     return (
                                         <div
@@ -303,22 +295,6 @@ async function getDisciplinas(): Promise<Disciplina[]> {
         console.error(error);
         return [];
     }
-}
-
-async function getTurnosByUser(clerkUserId: string): Promise<Reserva[]> {
-    const response = await fetch(`${API_URL}/api/reservas/getReservasByIdUsr`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ clerkUserId }),
-    });
-
-    if (!response.ok) {
-        throw new Error(`Error en la petición: ${response.status} ${response.statusText}`);
-    }
-
-    return await response.json();
 }
 
 async function deleteReserva(id: number): Promise<void> {

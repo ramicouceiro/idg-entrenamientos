@@ -3,12 +3,13 @@ import { Planificacion, Dias } from "../lib/mockPlanificaciones";
 import Layout from "../layouts/Layout";
 import { PlanificacionDetail } from "../components/Planificaciones/PlanificacionDetail";
 import { useUser } from "@clerk/clerk-react";
+import { usePlanificacionesStore } from "../stores/planificacionesStore";
 const API_URL = import.meta.env.VITE_API_URL;
 
 export default function PlanificacionesPage() {
   const [selectedPlan, setSelectedPlan] = useState<Planificacion | null>(null);
   const [selectedDia, setSelectedDia] = useState<Dias | null>(null);
-  const [planificaciones, setPlanificaciones] = useState<Planificacion[]>([]);
+  const { planificaciones, setPlanificaciones } = usePlanificacionesStore();
   const [loading, setLoading] = useState<boolean>(true);
   const { user } = useUser();
   const clerkUserId = user?.id;
@@ -26,9 +27,12 @@ export default function PlanificacionesPage() {
           setLoading(false);
       }
   };
-
-  fetchPlanificaciones();
-  }, [clerkUserId]);
+  if(!planificaciones){
+    fetchPlanificaciones();
+  }else{
+    setLoading(false);
+  }
+  }, [clerkUserId, setPlanificaciones, planificaciones]);
 
   return (
     <Layout user={user}>
