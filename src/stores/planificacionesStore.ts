@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import {Planificacion} from '../lib/mockPlanificaciones'
+import { Planificacion } from '../lib/mockPlanificaciones'
 
 interface PlanificacionesState {
   planificaciones: Planificacion[]
@@ -25,6 +25,14 @@ export const usePlanificacionesStore = create<PlanificacionesState>()(
     }),
     {
       name: 'planificaciones-storage',
+      onRehydrateStorage: () => () => {
+        // Detectar si no es la primera carga
+        if (sessionStorage.getItem('firstLoad')) {
+          localStorage.removeItem('planificaciones-storage') // Borrar datos
+        } else {
+          sessionStorage.setItem('firstLoad', 'true') // Marcar primera carga
+        }
+      },
     }
   )
 )

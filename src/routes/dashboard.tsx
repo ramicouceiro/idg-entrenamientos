@@ -3,39 +3,42 @@ import DashboardContent from '../components/DashboardContent';
 import Layout from '../layouts/Layout';
 import { usePlanificacionesStore } from '../stores/planificacionesStore';
 import { useTurnosStore } from '../stores/turnosStore';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { getHoraDisciplinaById, getPlanificacionesByIdUsr, getTurnosByUser } from '../lib/api';
 
 export default function DashboardPage() {
   const { user } = useUser();
   const clerkUserId = user?.id;
-  const { planificaciones, setPlanificaciones } = usePlanificacionesStore();
-  const { turnos, setTurnos } = useTurnosStore();
+  const { setPlanificaciones } = usePlanificacionesStore();
+  const { setTurnos } = useTurnosStore();
+
+  const planificacionesRef = useRef(usePlanificacionesStore((state) => state.planificaciones));
+  const turnosRef = useRef(useTurnosStore((state) => state.turnos));
 
   useEffect(() => {
     const fetchData = async () => {
       if (!clerkUserId) return;
       try {
-        if(!planificaciones.length){
-          const planificaciones = await getPlanificacionesByIdUsr(clerkUserId);
-          setPlanificaciones(planificaciones);
+        if(!planificacionesRef.current.length){
+          planificacionesRef.current = await getPlanificacionesByIdUsr(clerkUserId);
+          setPlanificaciones(planificacionesRef.current);
         }
 
-        if(!turnos.length){
-          const turnos = await getTurnosByUser(clerkUserId);
-          for (const turno of turnos) {
+        if(!turnosRef.current.length){
+          turnosRef.current = await getTurnosByUser(clerkUserId);
+          for (const turno of turnosRef.current) {
             const horaDisciplina = await getHoraDisciplinaById(turno.horario_id);
             turno.hora = horaDisciplina.hora;
             turno.disciplina = horaDisciplina.disciplina; 
           } 
-          setTurnos(turnos);
+          setTurnos(turnosRef.current);
         }
       } catch (err) {
         console.log(err);
       }
     };
     fetchData();
-  }, [clerkUserId, setPlanificaciones, setTurnos, planificaciones, turnos]);
+  }, [clerkUserId, setPlanificaciones, setTurnos]);
 
   return (
     <Layout user={user}>

@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import { Reserva } from '../lib/mockTurnos';
+import { Reserva } from '../lib/mockTurnos'
 
 interface TurnosState {
   turnos: Reserva[]
@@ -13,9 +13,10 @@ export const useTurnosStore = create<TurnosState>()(
   persist(
     (set) => ({
       turnos: [],
-      setTurnos: (turnos) => set((state) => ({
-        turnos: typeof turnos === 'function' ? turnos(state.turnos) : turnos,
-      })),
+      setTurnos: (turnos) =>
+        set((state) => ({
+          turnos: typeof turnos === 'function' ? turnos(state.turnos) : turnos,
+        })),
       addTurno: (turno) =>
         set((state) => ({
           turnos: [...state.turnos, turno],
@@ -27,6 +28,14 @@ export const useTurnosStore = create<TurnosState>()(
     }),
     {
       name: 'turnos-storage',
+      onRehydrateStorage: () => () => {
+        // Detectar si no es la primera carga
+        if (sessionStorage.getItem('firstLoad')) {
+          localStorage.removeItem('turnos-storage') // Borrar datos
+        } else {
+          sessionStorage.setItem('firstLoad', 'true') // Marcar primera carga
+        }
+      },
     }
   )
 )

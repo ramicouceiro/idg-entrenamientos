@@ -105,7 +105,7 @@ const Turnos: React.FC = () => {
     
         if (result.isConfirmed) {
             try {
-                await reservarTurno(formattedDate, horario.id, clerkUserId);
+                const turnoId = await reservarTurno(formattedDate, horario.id, clerkUserId);
     
                 // 🔹 Actualizar cupos disponibles
                 setHorariosDisponibles((prevHorarios) =>
@@ -118,7 +118,7 @@ const Turnos: React.FC = () => {
                 setTurnos((prevTurnos) => [
                     ...prevTurnos,
                     {
-                        id: Date.now(), // Generar un ID temporal
+                        id: turnoId, // Generar un ID temporal
                         fecha: formattedDate,
                         horario_id: horario.id,
                         clerk_user_id: clerkUserId!,
@@ -261,18 +261,21 @@ const Turnos: React.FC = () => {
 };
 
 // Función para reservar un turno en la API
-async function reservarTurno(fecha: string, horarioId: number, clerkUserId: string | undefined | null): Promise<void> {
+async function reservarTurno(fecha: string, horarioId: number, clerkUserId: string | undefined | null): Promise<number> {
     const response = await fetch(`${API_URL}/api/reservas/addReserva`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify({ fecha, horario_id: horarioId, clerk_user_id: clerkUserId }), // 🔹 Aquí corregimos los nombres
+        body: JSON.stringify({ fecha, horario_id: horarioId, clerk_user_id: clerkUserId }),
     });
-
+    
     if (!response.ok) {
         throw new Error(`Error en la reserva: ${response.status} ${response.statusText}`);
     }
+
+    const data = await response.json();
+    return data.id; // Assuming the API returns an object with an 'id' field
 }
 
 async function getCuposDisponibles(): Promise<Horario[]> {
