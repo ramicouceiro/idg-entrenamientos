@@ -87,7 +87,7 @@ const Layout: React.FC<LayoutProps> = ({ children, user, loading }) => {
       </aside>
 
       {/* Contenido principal */}
-      {loading ? <div className="w-full p-4 overflow-hidden flex items-center justify-center text-white"><Loader/></div> : <main className="w-full p-4 overflow-hidden">
+      {loading ? <Loader/> : <main className="w-full p-4 overflow-hidden">
         {children}
       </main>}
 
