@@ -5,6 +5,7 @@ import { usePlanificacionesStore } from '../stores/planificacionesStore';
 import { useTurnosStore } from '../stores/turnosStore';
 import { useEffect, useRef } from 'react';
 import { getHoraDisciplinaById, getPlanificacionesByIdUsr, getTurnosByUser } from '../lib/api';
+import PullToRefresh from 'react-simple-pull-to-refresh';
 
 export default function DashboardPage() {
   const { user } = useUser();
@@ -14,6 +15,16 @@ export default function DashboardPage() {
 
   const planificacionesRef = useRef(usePlanificacionesStore((state) => state.planificaciones));
   const turnosRef = useRef(useTurnosStore((state) => state.turnos));
+  
+  const handleRefresh = () => {
+    return new Promise<boolean>((resolve) => {
+      setTimeout(() => {
+        resolve(true);
+      }, 500);
+    }).then(() => {
+      window.location.reload();
+    });
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -41,11 +52,13 @@ export default function DashboardPage() {
   }, [clerkUserId, setPlanificaciones, setTurnos]);
 
   return (
-    <Layout user={user}>
-      <main className="bg-gray-800 text-white p-6 w-full">
-        <h1 className="text-2xl font-bold">👋 Buenos días {user?.firstName}!</h1>
-        <DashboardContent user={user} />
-      </main>
-    </Layout>
+    <PullToRefresh onRefresh={handleRefresh} resistance={5} className="bg-gray-800 text-gray-800 items-center" maxPullDownDistance={80} pullDownThreshold={80}>
+      <Layout user={user}>
+        <main className="bg-gray-800 text-white p-6 w-full">
+          <h1 className="text-2xl font-bold">👋 Buenos días {user?.firstName}!</h1>
+          <DashboardContent user={user} />
+        </main>
+      </Layout>
+    </PullToRefresh>
   );
 }
