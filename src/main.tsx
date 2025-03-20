@@ -19,6 +19,19 @@ import PaquetesPage from './routes/paquetes'
 import CrearHorariosPage from './routes/crearHorarios'
 import DisciplinasPage from './routes/disciplinas'
 import CrearPlanificacionesPage from './routes/crearPlanificaciones'
+// import PullToRefresh from './components/PullToRefresh'
+import PullToRefresh from 'react-simple-pull-to-refresh';
+
+
+const handleRefresh = () => {
+  return new Promise<boolean>((resolve) => {
+    setTimeout(() => {
+      resolve(true);
+    }, 500);
+  }).then(() => {
+    window.location.reload();
+  });
+};
 
 const router = createBrowserRouter([
   {
@@ -48,5 +61,7 @@ const router = createBrowserRouter([
 ]);
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
-  <RouterProvider router={router} />
+  <PullToRefresh onRefresh={handleRefresh} resistance={5} className="bg-gray-800 text-gray-800 items-center" maxPullDownDistance={80} pullDownThreshold={80}>
+    <RouterProvider router={router} />
+  </PullToRefresh>
 );
