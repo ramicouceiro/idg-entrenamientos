@@ -8,6 +8,7 @@ import { useClerk } from '@clerk/clerk-react';
 import { TbLogout2 } from 'react-icons/tb';
 import Swal from 'sweetalert2';
 import { FiPackage } from 'react-icons/fi';
+import Loader from '../components/Loader';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -86,7 +87,7 @@ const Layout: React.FC<LayoutProps> = ({ children, user, loading }) => {
       </aside>
 
       {/* Contenido principal */}
-      {loading ? <div className="w-full p-4 overflow-hidden flex items-center justify-center text-white">Cargando...</div> : <main className="w-full p-4 overflow-hidden">
+      {loading ? <div className="w-full p-4 overflow-hidden flex items-center justify-center text-white"><Loader/></div> : <main className="w-full p-4 overflow-hidden">
         {children}
       </main>}
 
