@@ -52,7 +52,7 @@ export default function DashboardPage() {
   }, [clerkUserId, setPlanificaciones, setTurnos]);
 
   return (
-    <PullToRefresh onRefresh={handleRefresh} resistance={5} className="bg-gray-800 text-gray-800 items-center" maxPullDownDistance={80} pullDownThreshold={80}>
+    <PullToRefresh onRefresh={handleRefresh} resistance={2} className="bg-gray-800 text-gray-800 items-center" maxPullDownDistance={60} pullDownThreshold={60}>
       <Layout user={user}>
         <main className="bg-gray-800 text-white p-6 w-full">
           <h1 className="text-2xl font-bold">👋 Buenos días {user?.firstName}!</h1>
