@@ -14,7 +14,7 @@ export default function AdminPage() {
     const isAdmin = user?.publicMetadata.role === "admin";
 
     return (
-        <Layout user={user}>
+        <Layout user={user} loading={false}>
             {isAdmin ? (
                 <div className="bg-gray-800 text-white p-6 w-full">
                     <h1 className="text-2xl font-bold mb-5">Administración</h1>

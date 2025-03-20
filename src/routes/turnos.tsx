@@ -5,7 +5,7 @@ import Turnos from "../components/Turnos";
 export default function TurnosPage(){
     const { user } = useUser();
     return(
-        <Layout user={user}>
+        <Layout user={user} loading={false}>
             <Turnos/>
         </Layout>
     );
