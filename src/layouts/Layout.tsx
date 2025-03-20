@@ -12,9 +12,10 @@ import { FiPackage } from 'react-icons/fi';
 interface LayoutProps {
   children: React.ReactNode;
   user: UserResource | null | undefined;
+  loading: boolean;
 }
 
-const Layout: React.FC<LayoutProps> = ({ children, user }) => {
+const Layout: React.FC<LayoutProps> = ({ children, user, loading }) => {
   const location = useLocation();
   const isAdmin = user?.publicMetadata.role === 'admin';
 
@@ -85,9 +86,9 @@ const Layout: React.FC<LayoutProps> = ({ children, user }) => {
       </aside>
 
       {/* Contenido principal */}
-      <main className="w-full p-4 overflow-hidden">
+      {loading ? <div className="w-full p-4 overflow-hidden flex items-center justify-center text-white">Cargando...</div> : <main className="w-full p-4 overflow-hidden">
         {children}
-      </main>
+      </main>}
 
       {/* Barra de navegación móvil */}
       <nav id="bottom-nav" className="fixed bottom-0 left-0 right-0 text-white bg-gray-900 flex justify-around text-xl md:hidden">

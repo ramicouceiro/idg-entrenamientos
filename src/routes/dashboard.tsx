@@ -3,7 +3,7 @@ import DashboardContent from '../components/DashboardContent';
 import Layout from '../layouts/Layout';
 import { usePlanificacionesStore } from '../stores/planificacionesStore';
 import { useTurnosStore } from '../stores/turnosStore';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { getHoraDisciplinaById, getPlanificacionesByIdUsr, getTurnosByUser } from '../lib/api';
 import PullToRefresh from 'react-simple-pull-to-refresh';
 
@@ -12,6 +12,7 @@ export default function DashboardPage() {
   const clerkUserId = user?.id;
   const { setPlanificaciones } = usePlanificacionesStore();
   const { setTurnos } = useTurnosStore();
+  const [loading, setLoading] = useState<boolean>(true);
 
   const planificacionesRef = useRef(usePlanificacionesStore((state) => state.planificaciones));
   const turnosRef = useRef(useTurnosStore((state) => state.turnos));
@@ -30,6 +31,7 @@ export default function DashboardPage() {
     const fetchData = async () => {
       if (!clerkUserId) return;
       try {
+        setLoading(true);
         if(!planificacionesRef.current.length){
           planificacionesRef.current = await getPlanificacionesByIdUsr(clerkUserId);
           setPlanificaciones(planificacionesRef.current);
@@ -44,6 +46,7 @@ export default function DashboardPage() {
           } 
           setTurnos(turnosRef.current);
         }
+        setLoading(false);
       } catch (err) {
         console.log(err);
       }
@@ -53,7 +56,7 @@ export default function DashboardPage() {
 
   return (
     <PullToRefresh onRefresh={handleRefresh} resistance={2} className="bg-gray-800 text-gray-800 items-center" maxPullDownDistance={60} pullDownThreshold={60}>
-      <Layout user={user}>
+      <Layout user={user} loading={loading}>
         <main className="bg-gray-800 text-white p-6 w-full">
           <h1 className="text-2xl font-bold">👋 Buenos días {user?.firstName}!</h1>
           <DashboardContent user={user} />
