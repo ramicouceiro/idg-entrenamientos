@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { IoMdHome } from 'react-icons/io';
-import { FaDumbbell, FaCalendarAlt, FaUserShield } from 'react-icons/fa';
+import { IoMdClose, IoMdHome } from 'react-icons/io';
+import { FaDumbbell, FaCalendarAlt, FaUserShield, FaPlay, FaPause, FaClock } from 'react-icons/fa';
 import { MdSlowMotionVideo } from 'react-icons/md';
 import { UserResource } from "@clerk/types";
 import { useClerk } from '@clerk/clerk-react';
@@ -10,6 +10,7 @@ import Swal from 'sweetalert2';
 import { FiPackage } from 'react-icons/fi';
 import Loader from '../components/Loader';
 import { motion } from 'framer-motion';
+import { useTimer } from '../hooks/useTimerContext';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -20,11 +21,12 @@ interface LayoutProps {
 const Layout: React.FC<LayoutProps> = ({ children, user, loading }) => {
   const location = useLocation();
   const isAdmin = user?.publicMetadata.role === 'admin';
+  const { timer, timerActive, timerPaused, stopTimer, closeTimer } = useTimer();
 
   const isActive = (path: string) => location.pathname === path;
 
   const { signOut } = useClerk();
-
+    
   const handleSignOut = () =>{
     Swal.fire({
                 title: "¿Cerrar sesión?",
@@ -32,10 +34,10 @@ const Layout: React.FC<LayoutProps> = ({ children, user, loading }) => {
                 confirmButtonText: "Cerrar sesión",
                 cancelButtonText: `Cancelar`,
                 icon: "warning",
-                background: "#1F2937", // Color de fondo (gris oscuro)
-                color: "#FFFFFF", // Color del texto
-                confirmButtonColor: "#EF4444", // Rojo Tailwind
-                denyButtonColor: "#9CA3AF", // Gris claro
+                background: "#1F2937",
+                color: "#FFFFFF",
+                confirmButtonColor: "#EF4444",
+                denyButtonColor: "#9CA3AF",
                 customClass: {
                     popup: 'custom-swal-popup',
                     title: 'custom-swal-title',
@@ -89,6 +91,28 @@ const Layout: React.FC<LayoutProps> = ({ children, user, loading }) => {
 
       {/* Contenido principal */}
       {loading ? <Loader/> : <main className="w-full p-4 overflow-hidden">
+        {timerActive && (
+        <div className="fixed top-0 left-0 w-full bg-gray-800 p-4 flex items-center justify-around shadow-lg z-50 text-white">
+          <div className="flex items-center gap-4">
+            <div className="flex items-center">
+              <FaClock className="text-blue-300 mr-2" />
+              <span className="text-2xl font-bold">{timer}s</span>
+            </div>
+            <button 
+              className={`text-white p-2 rounded-full transition-colors text-sm focus:outline-none ${timerPaused ? "bg-green-500" : "bg-red-500"}`}
+              onClick={stopTimer}
+            >
+              {timerPaused ? <FaPlay /> : <FaPause/>}
+            </button>
+            <button 
+              className="text-white p-2 rounded-full transition-colors text-sm focus:outline-none bg-gray-700"
+              onClick={closeTimer}
+            >
+              <IoMdClose />
+            </button>
+          </div>
+        </div>
+    )}
         {children}
       </main>}
 

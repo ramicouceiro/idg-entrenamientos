@@ -37,7 +37,7 @@ export default function PlanificacionesPage() {
   return (
     <Layout user={user} loading={loading}>
       <main className="bg-gray-800 text-white p-2 xl:p-6 mb-24 xl:mb-0">
-        <h1 className="text-2xl font-bold mb-4">Planificaciones</h1>
+        <h1 className="text-2xl font-bold mb-8">Planificaciones</h1>
         {loading ? (
           <p className="text-center">Cargando planificaciones...</p>
         ) : !selectedPlan ? (
@@ -45,7 +45,7 @@ export default function PlanificacionesPage() {
             {planificaciones.map((plan) => (
               <button
                 key={plan.id}
-                className="block bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-md mb-2 w-full text-left"
+                className="block bg-gray-700 hover:bg-gray-600 text-white p-10 rounded-md mb-2 w-full text-center text-xl font-bold"
                 onClick={() => setSelectedPlan(plan)}
               >
                 {plan.nombre}
@@ -58,13 +58,13 @@ export default function PlanificacionesPage() {
               className="mb-4 bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-md"
               onClick={() => setSelectedPlan(null)}
             >
-              ⬅ Volver a Planificaciones
+              ⬅ Planificaciones
             </button>
             <h2 className="text-xl font-semibold mb-3">{selectedPlan.nombre}</h2>
             {selectedPlan.dias.map((dia) => (
               <button
                 key={dia.id}
-                className="block bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-md mb-2 w-full text-left"
+                className="block bg-gray-700 hover:bg-gray-600 text-white p-10 rounded-md mb-2 w-full text-center text-xl font-bold"
                 onClick={() => setSelectedDia(dia)}
               >
                 {dia.nombre}
@@ -77,7 +77,7 @@ export default function PlanificacionesPage() {
               className="mb-4 bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-md"
               onClick={() => setSelectedDia(null)}
             >
-              ⬅ Volver a {selectedPlan.nombre}
+              ⬅ {selectedPlan.nombre}
             </button>
             <h2 className="text-xl font-semibold mb-3">{selectedDia.nombre}</h2>
             <PlanificacionDetail dia={selectedDia} />

@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Ejercicio } from "../../lib/mockPlanificaciones";
+import { FaClock } from "react-icons/fa";
+import { useTimer } from "../../hooks/useTimerContext";
 
 export interface Serie {
   numero: number;
@@ -14,10 +16,11 @@ interface EjercicioProps {
 
 export function EjercicioComponent({ ejercicio }: EjercicioProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const { startTimer, timerActive } = useTimer();
 
   return (
+    <>
     <div className="bg-gray-600 p-3 rounded-md mt-2">
-      {/* Botón para abrir/cerrar el desplegable */}
       <button
         className="w-full text-left bg-gray-800 flex justify-between items-center text-lg font-semibold focus:outline-none"
         onClick={() => setIsOpen(!isOpen)}
@@ -26,7 +29,6 @@ export function EjercicioComponent({ ejercicio }: EjercicioProps) {
         <span>{isOpen ? "▲" : "▼"}</span>
       </button>
 
-      {/* Contenido desplegable con animación */}
       <motion.div
         initial={{ height: 0, opacity: 0 }}
         animate={isOpen ? { height: "auto", opacity: 1 } : { height: 0, opacity: 0 }}
@@ -34,9 +36,14 @@ export function EjercicioComponent({ ejercicio }: EjercicioProps) {
         className="overflow-hidden"
       >
         <div className="mt-2 bg-gray-700 p-2 rounded-md">
-          <p className="text-gray-300">⏳ <strong>Descanso entre series:</strong> {ejercicio.descanso}s</p>
+          <button 
+            className="flex justify-end items-center text-blue-300 text-right text-sm font-bold gap-1 hover:text-blue-400 transition-colors" 
+            onClick={() => startTimer(ejercicio.descanso)}
+            disabled={timerActive}
+          >
+            <FaClock />{ejercicio.descanso}s
+          </button>
 
-          {/* Tabla de Series */}
           <table className="w-full mt-2 border-collapse">
             <thead>
               <tr className="border-b border-gray-500">
@@ -48,9 +55,9 @@ export function EjercicioComponent({ ejercicio }: EjercicioProps) {
             <tbody>
               {ejercicio.series.map((serie) => (
                 <tr key={serie.numero} className="border-b border-gray-500">
-                  <td className="p-2">#{serie.numero}</td>
+                  <td className="p-2">{serie.numero}</td>
                   <td className="p-2">{serie.repeticiones}</td>
-                  <td className="p-2">{serie.peso} kg</td>
+                  <td className="p-2">{serie.peso}</td>
                 </tr>
               ))}
             </tbody>
@@ -58,5 +65,6 @@ export function EjercicioComponent({ ejercicio }: EjercicioProps) {
         </div>
       </motion.div>
     </div>
+    </>
   );
 }

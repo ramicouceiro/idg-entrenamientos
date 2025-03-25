@@ -1,6 +1,7 @@
 import ReactDOM from 'react-dom/client'
 import './index.css'
 import { RouterProvider, createBrowserRouter } from 'react-router-dom'
+import { TimerProvider } from './context/TimerContext'
 
 // Import the layouts
 import RootLayout from './layouts/root-layout'
@@ -48,5 +49,7 @@ const router = createBrowserRouter([
 ]);
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
+  <TimerProvider>
     <RouterProvider router={router} />
+  </TimerProvider>
 );
