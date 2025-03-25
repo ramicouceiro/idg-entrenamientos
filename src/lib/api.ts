@@ -1,3 +1,4 @@
+import { Horario } from "../types/horariosTypes";
 import { HoraDisciplina } from "./mockTurnos";
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -57,3 +58,14 @@ export const getHoraDisciplinaById = async (id: number): Promise<HoraDisciplina>
   
       return await response.json();
   }
+
+export async function getCuposDisponibles(): Promise<Horario[]> {
+  try {
+      const response = await fetch(`${API_URL}/api/horarios/getCuposDisponibles`);
+      if (!response.ok) throw new Error("Error obteniendo horarios");
+      return await response.json();
+  } catch (error) {
+      console.error(error);
+      return [];
+  }
+}

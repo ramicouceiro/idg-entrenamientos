@@ -92,28 +92,28 @@ const Layout: React.FC<LayoutProps> = ({ children, user, loading }) => {
       </main>}
 
       {/* Barra de navegación móvil */}
-      <nav id="bottom-nav" className={`fixed bottom-0 left-0 right-0 text-white bg-gray-900 flex justify-around text-xl md:hidden ${loading ? 'hidden' : ''}`} >
-        <Link to="/" className={`flex flex-col items-center w-full h-full hover:text-green-500 pb-14 pt-10 ${isActive('/') ? 'text-green-500 bg-gray-700' : 'text-white'}`}>
+      <nav id="bottom-nav" className={`fixed mb-14  w-[95%] bottom-0 left-[50%] -translate-x-[50%] rounded-xl text-white bg-gray-900 flex justify-around text-xl md:hidden ${loading ? 'hidden' : ''}`} >
+        <Link to="/" className={`flex flex-col items-center w-full h-full hover:text-green-500 p-4 rounded-xl ${isActive('/') ? 'text-green-500 bg-gray-700' : 'text-white'}`}>
           <IoMdHome />
         </Link>
-        <Link to="/planificaciones" className={`flex flex-col items-center w-full h-full hover:text-green-500 pb-14 pt-10 ${isActive('/planificaciones') ? 'text-green-500 bg-gray-700' : 'text-white'}`}>
+        <Link to="/planificaciones" className={`flex flex-col items-center w-full h-full hover:text-green-500 p-4 rounded-xl ${isActive('/planificaciones') ? 'text-green-500 bg-gray-700' : 'text-white'}`}>
           <FaDumbbell />
         </Link>
-        <Link to="/turnos" className={`flex flex-col items-center w-full h-full hover:text-green-500 pb-14 pt-10 ${isActive('/turnos') ? 'text-green-500 bg-gray-700' : 'text-white'}`}>
+        <Link to="/turnos" className={`flex flex-col items-center w-full h-full hover:text-green-500 p-4 rounded-xl ${isActive('/turnos') ? 'text-green-500 bg-gray-700' : 'text-white'}`}>
           <FaCalendarAlt />
         </Link>
-        <Link to="/videos" className={`flex flex-col items-center w-full h-full hover:text-green-500 pb-14 pt-10 ${isActive('/videos') ? 'text-green-500 bg-gray-700' : 'text-white'}`}>
+        <Link to="/videos" className={`flex flex-col items-center w-full h-full hover:text-green-500 p-4 rounded-xl ${isActive('/videos') ? 'text-green-500 bg-gray-700' : 'text-white'}`}>
           <MdSlowMotionVideo />
         </Link>
-        <Link to="/paquetes" className={`flex flex-col items-center w-full h-full hover:text-green-500 pb-14 pt-10 ${isActive('/paquetes') ? 'text-green-500 bg-gray-700' : 'text-white'}`}>
+        <Link to="/paquetes" className={`flex flex-col items-center w-full h-full hover:text-green-500 p-4 rounded-xl ${isActive('/paquetes') ? 'text-green-500 bg-gray-700' : 'text-white'}`}>
           <FiPackage />
         </Link>
         {isAdmin && (
-          <Link to="/admin" className={`flex flex-col items-center w-full h-full hover:text-green-500 pb-14 pt-10 ${isActive('/admin') ? 'text-green-500 bg-gray-700' : 'text-white'}`}>
+          <Link to="/admin" className={`flex flex-col items-center w-full h-full hover:text-green-500 p-4 rounded-xl ${isActive('/admin') ? 'text-green-500 bg-gray-700' : 'text-white'}`}>
             <FaUserShield />
           </Link>
         )}
-        <div className="flex flex-col items-center w-full h-full text-red-500 cursor-pointer pb-14 pt-10" onClick={handleSignOut}>
+        <div className="flex flex-col items-center w-full h-full text-red-500 cursor-pointer p-4 rounded-xl" onClick={handleSignOut}>
             <TbLogout2 />
         </div>
       </nav>

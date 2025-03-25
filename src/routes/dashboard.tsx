@@ -3,8 +3,9 @@ import DashboardContent from '../components/DashboardContent';
 import Layout from '../layouts/Layout';
 import { usePlanificacionesStore } from '../stores/planificacionesStore';
 import { useTurnosStore } from '../stores/turnosStore';
+import { useHorariosStore } from '../stores/horariosStore';
 import { useEffect, useRef, useState } from 'react';
-import { getHoraDisciplinaById, getPlanificacionesByIdUsr, getTurnosByUser } from '../lib/api';
+import { getHoraDisciplinaById, getPlanificacionesByIdUsr, getTurnosByUser, getCuposDisponibles } from '../lib/api';
 import PullToRefresh from 'react-simple-pull-to-refresh';
 
 export default function DashboardPage() {
@@ -12,11 +13,12 @@ export default function DashboardPage() {
   const clerkUserId = user?.id;
   const { setPlanificaciones } = usePlanificacionesStore();
   const { setTurnos } = useTurnosStore();
+  const { setHorarios } = useHorariosStore();
   const [loading, setLoading] = useState<boolean>(true);
 
   const planificacionesRef = useRef(usePlanificacionesStore((state) => state.planificaciones));
   const turnosRef = useRef(useTurnosStore((state) => state.turnos));
-  
+  const horariosRef = useRef(useHorariosStore((state) => state.horarios));  
   const handleRefresh = () => {
     return new Promise<boolean>((resolve) => {
       setTimeout(() => {
@@ -46,13 +48,18 @@ export default function DashboardPage() {
           } 
           setTurnos(turnosRef.current);
         }
+        if(!horariosRef.current.length){
+          horariosRef.current = await getCuposDisponibles();
+          setHorarios(horariosRef.current);
+        }
         setLoading(false);
       } catch (err) {
         console.log(err);
+        setLoading(false);
       }
     };
     fetchData();
-  }, [clerkUserId, setPlanificaciones, setTurnos]);
+  }, [clerkUserId, setPlanificaciones, setTurnos, setHorarios]);
 
   return (
     <PullToRefresh onRefresh={handleRefresh} resistance={2} className="bg-gray-800 text-gray-800 items-center" maxPullDownDistance={60} pullDownThreshold={60}>

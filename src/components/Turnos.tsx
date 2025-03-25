@@ -2,6 +2,7 @@ import { useUser } from "@clerk/clerk-react";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { useTurnosStore } from "../stores/turnosStore";
+import { useHorariosStore } from "../stores/horariosStore";
 const API_URL = import.meta.env.VITE_API_URL;
 
 interface Horario {
@@ -47,11 +48,11 @@ const getCurrentTime = () => {
 };
 
 const Turnos: React.FC = () => {
-    const [horariosDisponibles, setHorariosDisponibles] = useState<Horario[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [disciplinas, setDisciplinas] = useState<Disciplina[]>([]);
-    const { turnos, setTurnos } = useTurnosStore();
+    const { horarios, setHorarios } = useHorariosStore();  
+    const { turnos, setTurnos } = useTurnosStore();      
     const { user } = useUser();
     const clerkUserId = user?.id;
 
@@ -59,28 +60,36 @@ const Turnos: React.FC = () => {
     const currentTime = getCurrentTime();
 
     useEffect(() => {
-        const fetchHorarios = async () => {
-            if (!clerkUserId) return; // ⬅ Evitar ejecutar la petición si aún no hay usuario
-    
-            setLoading(true);
+        const initializeDisciplinas = async () => {
             try {
-                // const reservasUsr = await getTurnosByUser(clerkUserId);
-                // setReservas(reservasUsr);
-    
-                const dataDisciplinas: Disciplina[] = await getDisciplinas();
+                const dataDisciplinas = await getDisciplinas();
                 setDisciplinas(dataDisciplinas);
-    
-                const data: Horario[] = await getCuposDisponibles();
-                setHorariosDisponibles(data);
             } catch (err) {
-                setError("Error obteniendo horarios: " + err);
+                setError("Error obteniendo disciplinas: " + err);
             } finally {
                 setLoading(false);
             }
         };
-    
-        fetchHorarios();
-    }, [clerkUserId]);
+        
+        initializeDisciplinas();
+    }, []);
+
+    // Filtrar los días con horarios futuros
+    const filteredDays = days.filter(({ day, name }) => {
+        // Filtrar los horarios que aún no han pasado y tienen cupos disponibles
+        const horariosFuturos = horarios.filter(horario => {
+            if (horario.dia_semana !== name) return false;
+
+            const [hours, minutes] = horario.hora.split(':').map(Number);
+            const horarioMinutes = hours * 60 + minutes;
+
+            return day === new Date().getDate() 
+                ? horarioMinutes > currentTime && horario.cupo_disponible > 0
+                : horario.cupo_disponible > 0;
+        });
+
+        return horariosFuturos.length > 0;
+    });
 
     const handleReserva = async (horario: Horario, day: number) => {
         const today = new Date();
@@ -99,16 +108,14 @@ const Turnos: React.FC = () => {
             cancelButtonText: "Cancelar",
             background: "#1F2937",
             color: "#FFFFFF",
-            confirmButtonColor: "#22C55E",
-            cancelButtonColor: "#EF4444",
         });
-    
+
         if (result.isConfirmed) {
             try {
                 const turnoId = await reservarTurno(formattedDate, horario.id, clerkUserId);
     
                 // 🔹 Actualizar cupos disponibles
-                setHorariosDisponibles((prevHorarios) =>
+                setHorarios((prevHorarios) =>
                     prevHorarios.map((h) =>
                         h.id === horario.id ? { ...h, cupo_disponible: h.cupo_disponible - 1 } : h
                     )
@@ -118,7 +125,7 @@ const Turnos: React.FC = () => {
                 setTurnos((prevTurnos) => [
                     ...prevTurnos,
                     {
-                        id: turnoId, // Generar un ID temporal
+                        id: turnoId,
                         fecha: formattedDate,
                         horario_id: horario.id,
                         clerk_user_id: clerkUserId!,
@@ -129,11 +136,10 @@ const Turnos: React.FC = () => {
     
                 Swal.fire({
                     title: "Reserva Confirmada",
-                    text: `Tu turno para el ${formattedDate} ha sido reservado.`,
+                    text: "Tu turno fue reservado correctamente.",
                     icon: "success",
                     background: "#1F2937",
                     color: "#FFFFFF",
-                    confirmButtonColor: "#22C55E",
                 });
             } catch (error) {
                 console.error("Error al reservar el turno:", error);
@@ -149,19 +155,17 @@ const Turnos: React.FC = () => {
         }
     };
 
-    const handleDeleteReserva = async (id: number) => {
+    const handleDeleteReserva = async (id: number, horarioId: number) => {
         const result = await Swal.fire({
-            title: "¿Estás seguro de que quieres cancelar el turno?",
-            showCancelButton: true,
-            confirmButtonText: "Cancelar Turno",
-            cancelButtonText: "Cancelar",
+            title: "¿Estás seguro?",
+            text: "Esta acción no se puede deshacer",
             icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Sí, cancelar turno",
+            cancelButtonText: "No, mantener turno",
             background: "#1F2937",
             color: "#FFFFFF",
-            confirmButtonColor: "#EF4444",
-            denyButtonColor: "#9CA3AF",
             customClass: {
-                popup: 'custom-swal-popup',
                 title: 'custom-swal-title',
                 confirmButton: 'custom-swal-confirm',
                 denyButton: 'custom-swal-deny',
@@ -171,7 +175,14 @@ const Turnos: React.FC = () => {
         if (result.isConfirmed) {
             try {
                 await deleteReserva(id);
-                setTurnos((setTurnos) => setTurnos.filter((turno) => turno.id !== id));
+                // Actualizar el estado de turnos
+                setTurnos((prevTurnos) => prevTurnos.filter(turno => turno.id !== id));
+                // Actualizar cupos disponibles
+                setHorarios((prevHorarios) =>
+                    prevHorarios.map((h) =>
+                        h.id === horarioId ? { ...h, cupo_disponible: h.cupo_disponible + 1 } : h
+                    )
+                );
                 Swal.fire({
                     title: "Turno cancelado",
                     text: "Tu turno fue cancelado correctamente.",
@@ -195,20 +206,6 @@ const Turnos: React.FC = () => {
     };
     
 
-    // Filtrar los días con horarios futuros
-    const filteredDays = days.filter(({ day, name }) => {
-        const horarios = horariosDisponibles.filter(horario => horario.dia_semana === name);
-
-        // Filtrar los horarios que aún no han pasado y tienen cupos disponibles
-        const horariosFuturos = horarios.filter(horario => {
-            const [hour, minute] = horario.hora.split(":").map(Number);
-            const turnoTime = hour * 60 + minute;
-            return (day !== new Date().getDate() || turnoTime >= currentTime) && horario.cupo_disponible > 0;
-        });
-
-        return horariosFuturos.length > 0;
-    });
-
     if (loading && !clerkUserId) return <div className="w-full h-full flex justify-center items-center"><div
     className="w-10 h-10 border-4 border-t-blue-500 border-gray-300 rounded-full animate-spin"></div></div>;
     if (error) return <p className="text-red-500">{error}</p>;
@@ -227,7 +224,7 @@ const Turnos: React.FC = () => {
                             <h3 className="text-lg font-semibold text-white mb-3">{name} {day}</h3>
                             {/* Contenedor con scroll si hay demasiados horarios */}
                             <div className="flex flex-col gap-4 overflow-y-auto flex-grow max-h-[60vh] sm:max-h-[75vh] custom-scroll">
-                            {horariosDisponibles
+                            {horarios
                                 .filter(horario => horario.dia_semana === name && horario.cupo_disponible > 0)
                                 .map((horario, index) => {
                                     const formattedDate = `${new Date().getFullYear()}-${(new Date().getMonth() + 1).toString().padStart(2, "0")}-${day.toString().padStart(2, "0")}`;
@@ -239,7 +236,7 @@ const Turnos: React.FC = () => {
                                             className={`p-2 xl:p-4 rounded-lg shadow-sm cursor-pointer transition ${userReserva ? 'bg-green-700' : 'bg-gray-700 hover:bg-gray-600'}`}
                                             onClick={() => {
                                                 if (userReserva) {
-                                                    handleDeleteReserva(userReserva.id);
+                                                    handleDeleteReserva(userReserva.id, horario.id);
                                                 } else {
                                                     handleReserva(horario, day);
                                                 }
@@ -278,16 +275,16 @@ async function reservarTurno(fecha: string, horarioId: number, clerkUserId: stri
     return data.id; // Assuming the API returns an object with an 'id' field
 }
 
-async function getCuposDisponibles(): Promise<Horario[]> {
-    try {
-        const response = await fetch(`${API_URL}/api/horarios/getCuposDisponibles`);
-        if (!response.ok) throw new Error("Error obteniendo horarios");
-        return await response.json();
-    } catch (error) {
-        console.error(error);
-        return [];
-    }
-}
+// async function getCuposDisponibles(): Promise<Horario[]> {
+//     try {
+//         const response = await fetch(`${API_URL}/api/horarios/getCuposDisponibles`);
+//         if (!response.ok) throw new Error("Error obteniendo horarios");
+//         return await response.json();
+//     } catch (error) {
+//         console.error(error);
+//         return [];
+//     }
+// }
 
 async function getDisciplinas(): Promise<Disciplina[]> {
     try {
