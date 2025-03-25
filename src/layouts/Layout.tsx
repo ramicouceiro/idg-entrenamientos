@@ -9,6 +9,7 @@ import { TbLogout2 } from 'react-icons/tb';
 import Swal from 'sweetalert2';
 import { FiPackage } from 'react-icons/fi';
 import Loader from '../components/Loader';
+import { motion } from 'framer-motion';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -92,29 +93,43 @@ const Layout: React.FC<LayoutProps> = ({ children, user, loading }) => {
       </main>}
 
       {/* Barra de navegación móvil */}
-      <nav id="bottom-nav" className={`fixed mb-14  w-[95%] bottom-0 left-[50%] -translate-x-[50%] rounded-xl text-white bg-gray-900 flex justify-around text-xl md:hidden ${loading ? 'hidden' : ''}`} >
-        <Link to="/" className={`flex flex-col items-center w-full h-full hover:text-green-500 p-4 rounded-xl ${isActive('/') ? 'text-green-500 bg-gray-700' : 'text-white'}`}>
+      <nav id="bottom-nav" className={`fixed mb-14 w-[95%] bottom-0 left-[50%] -translate-x-[50%] rounded-xl text-white bg-gray-900 flex justify-around text-xl md:hidden`}>
+        <motion.div 
+          className="absolute h-full bg-gray-700 rounded-xl"
+          layoutId="activeTab"
+          style={{
+            width: `${100 / (isAdmin ? 7 : 6)}%`,
+            left: `${location.pathname === '/' ? '0' : 
+                   location.pathname === '/planificaciones' ? '14.28' : 
+                   location.pathname === '/turnos' ? '28.56' : 
+                   location.pathname === '/videos' ? '42.84' :
+                   location.pathname === '/paquetes' ? '57.12' :
+                   location.pathname.startsWith('/admin') ? '71.4' : '85.68'}%`
+          }}
+          transition={{ type: "spring", stiffness: 300, damping: 30 }}
+        />
+        <Link to="/" className={`relative flex flex-col items-center w-full h-full hover:text-green-500 p-4 rounded-xl z-10 transition-colors ${isActive('/') ? 'text-green-500' : 'text-white'}`}>
           <IoMdHome />
         </Link>
-        <Link to="/planificaciones" className={`flex flex-col items-center w-full h-full hover:text-green-500 p-4 rounded-xl ${isActive('/planificaciones') ? 'text-green-500 bg-gray-700' : 'text-white'}`}>
+        <Link to="/planificaciones" className={`relative flex flex-col items-center w-full h-full hover:text-green-500 p-4 rounded-xl z-10 transition-colors ${isActive('/planificaciones') ? 'text-green-500' : 'text-white'}`}>
           <FaDumbbell />
         </Link>
-        <Link to="/turnos" className={`flex flex-col items-center w-full h-full hover:text-green-500 p-4 rounded-xl ${isActive('/turnos') ? 'text-green-500 bg-gray-700' : 'text-white'}`}>
+        <Link to="/turnos" className={`relative flex flex-col items-center w-full h-full hover:text-green-500 p-4 rounded-xl z-10 transition-colors ${isActive('/turnos') ? 'text-green-500' : 'text-white'}`}>
           <FaCalendarAlt />
         </Link>
-        <Link to="/videos" className={`flex flex-col items-center w-full h-full hover:text-green-500 p-4 rounded-xl ${isActive('/videos') ? 'text-green-500 bg-gray-700' : 'text-white'}`}>
+        <Link to="/videos" className={`relative flex flex-col items-center w-full h-full hover:text-green-500 p-4 rounded-xl z-10 transition-colors ${isActive('/videos') ? 'text-green-500' : 'text-white'}`}>
           <MdSlowMotionVideo />
         </Link>
-        <Link to="/paquetes" className={`flex flex-col items-center w-full h-full hover:text-green-500 p-4 rounded-xl ${isActive('/paquetes') ? 'text-green-500 bg-gray-700' : 'text-white'}`}>
+        <Link to="/paquetes" className={`relative flex flex-col items-center w-full h-full hover:text-green-500 p-4 rounded-xl z-10 transition-colors ${isActive('/paquetes') ? 'text-green-500' : 'text-white'}`}>
           <FiPackage />
         </Link>
         {isAdmin && (
-          <Link to="/admin" className={`flex flex-col items-center w-full h-full hover:text-green-500 p-4 rounded-xl ${isActive('/admin') ? 'text-green-500 bg-gray-700' : 'text-white'}`}>
+          <Link to="/admin" className={`relative flex flex-col items-center w-full h-full hover:text-green-500 p-4 rounded-xl z-10 transition-colors ${location.pathname.startsWith('/admin') ? 'text-green-500' : 'text-white'}`}>
             <FaUserShield />
           </Link>
         )}
-        <div className="flex flex-col items-center w-full h-full text-red-500 cursor-pointer p-4 rounded-xl" onClick={handleSignOut}>
-            <TbLogout2 />
+        <div className="relative flex flex-col items-center w-full h-full text-red-500 cursor-pointer p-4 rounded-xl z-10" onClick={handleSignOut}>
+          <TbLogout2 />
         </div>
       </nav>
     </div>
