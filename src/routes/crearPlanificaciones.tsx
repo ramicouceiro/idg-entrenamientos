@@ -94,7 +94,7 @@ export default function CrearPlanificacionesPage() {
   };
 
   return (
-    <div className="p-6 bg-gray-900 text-gray-200 rounded-xl mt-5">
+    <div className="p-6 bg-gray-900 text-gray-200 rounded-xl mt-5 mb-24">
       <h1 className="text-2xl font-bold">Crear Nueva Planificación</h1>
       <input
         type="text"
